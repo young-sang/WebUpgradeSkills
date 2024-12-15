@@ -1,20 +1,43 @@
+import { renderMain } from './Main.js';
+import { renderCreatePostForm } from './createPost.js';
+
 export const renderNav = (container) => {
 
-    const navItems = ["a", "b", "c"];
+    const navItems = ["Posts", "Write", "History", "Options"];
+
+    const mainContainer = document.getElementById("app-content");
 
     var navItemsHTML = '';
     navItems.forEach(navItem => {
-        navItemsHTML += `<li id="item">${navItem}</li>`
+        navItemsHTML += `<li class="item">${navItem}</li>`
     });
 
     const nav = `
-        <nav id="app-nav">
-            <ul class="items">
-                ${navItemsHTML}
-            </ul>
-        </nav>
+        <ul class="items">
+            ${navItemsHTML}
+        </ul>
     `;
-    
+
     container.innerHTML += nav;
-    console.log(container.innerHTML);
+
+    const navList = document.querySelectorAll(".item");
+    navList.forEach(item => {
+        item.addEventListener('click', (event) => {
+            const itemText = event.target.innerText;
+            switch(itemText){
+                case "Posts":
+                    renderMain(mainContainer);
+                    break;
+                case "Write":
+                    mainContainer.innerHTML = '';
+                    renderCreatePostForm(mainContainer);
+                    break;
+                case "History":
+                    break;
+                case "Options":
+                    break;
+            }
+        });
+    });
+    
 };

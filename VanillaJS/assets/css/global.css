@@ -1,0 +1,143 @@
+/* Global Styles */
+html{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    box-sizing: border-box;
+    background-color: #f4f4f9;   
+}
+
+ul{
+    list-style: none;
+    padding: 0;
+}
+
+/* 헤더 */
+#app-header {
+    background-color: #333;
+    color: #fff;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header #toMain {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+header nav {
+    display: flex;
+    gap: 15px;
+}
+
+header nav ul{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+header nav li {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+header nav li:hover {
+    color: #ffd700;
+}
+
+
+/* 검색 */
+.search-bar {
+    margin: 20px auto;
+    padding: 0 10px;
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+}
+
+.search-bar button {
+    padding: 10px 15px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #444;
+}
+
+/* 포스트 리스트 섹션 */
+
+.post-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px;
+}
+
+.post-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.post-card h2 {
+    margin: 0 0 10px;
+}
+
+/* .post-card p {
+    color: #555;
+    font-size: 0.9rem;
+    line-height: 1.4;
+} */
+
+/* .post-card a {
+    display: inline-block;
+    margin-top: 10px;
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.post-card a:hover {
+    color: #ffd700;
+} */
+
+#app-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+    margin-top: 20px;
+}

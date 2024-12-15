@@ -1,14 +1,14 @@
 export const renderPosts = (container, posts) => {
     
     const postsHTML = posts.map(post => `
-        <article class="post">
+        <article class="post-card">
             <h2>${post.title}</h2>
         </article>
     `).join('');
 
-    container.innerHTML = postsHTML;
+    container.innerHTML += `<section class="post-list">${postsHTML}</section>`;
 
-    const articles = document.querySelectorAll(".post");
+    const articles = document.querySelectorAll(".post-card");
     articles.forEach((article, index) => {
         article.addEventListener('click', (event) => {
             event.preventDefault();
@@ -16,8 +16,7 @@ export const renderPosts = (container, posts) => {
             renderPost(container, posts[index]);
         });
     });
-
-}
+};
 
 
 export const renderPost = (container, post) => {
