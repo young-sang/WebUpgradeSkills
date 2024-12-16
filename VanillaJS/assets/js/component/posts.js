@@ -1,21 +1,44 @@
-export const renderPosts = (container, posts) => {
+import { renderSearhForm } from "./search.js";
+
+export const renderPostsPage = (container) => {
+    container.innerHTML = '';
     
-    const postsHTML = posts.map(post => `
-        <article class="post-card">
-            <h2>${post.title}</h2>
-        </article>
-    `).join('');
+    renderSearhForm(container);
+    renderPosts(container);
+}
 
-    container.innerHTML += `<section class="post-list">${postsHTML}</section>`;
+export const renderPosts = (container) => {
+    (async () => {
+        try {
+            await axios.get('./postData.json')
+            .then(res => {
+                const posts = res.data;
 
-    const articles = document.querySelectorAll(".post-card");
-    articles.forEach((article, index) => {
-        article.addEventListener('click', (event) => {
-            event.preventDefault();
+                const postsHTML = posts.map(post => `
+                    <article class="post-card">
+                        <h2>${post.title}</h2>
+                    </article>
+                `).join('');
             
-            renderPost(container, posts[index]);
-        });
-    });
+                container.innerHTML += `<section class="post-list">${postsHTML}</section>`;
+            
+                const articles = document.querySelectorAll(".post-card");
+                articles.forEach((article, index) => {
+                    article.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        
+                        renderPost(container, posts[index]);
+                    });
+                });
+            })
+            .catch(error => {
+                console.error("1", error);
+            });
+
+        } catch (error) {
+            console.error("2", error);
+        }
+    })();
 };
 
 

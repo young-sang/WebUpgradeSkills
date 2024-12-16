@@ -1,5 +1,4 @@
 import { renderPosts } from './posts.js';
-import { renderMain } from './Main.js';
 
 export const renderCreatePostForm = (container) => {
     const inputFrom = `

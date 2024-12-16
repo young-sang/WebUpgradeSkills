@@ -1,5 +1,5 @@
-import { renderMain } from './Main.js';
 import { renderNav } from './nav.js';
+import { renderPostsPage } from './posts.js';
 
 export const renderHeader = (container) => {
 
@@ -19,7 +19,7 @@ export const renderHeader = (container) => {
     const toggleNav = document.getElementById("navIcon");
 
     backToMain.addEventListener('click', () => {
-        renderMain(document.getElementById('app-content'));
+        renderPostsPage(document.getElementById('app-content'));
     });
     
     // toggleNav.addEventListener('click', () => {

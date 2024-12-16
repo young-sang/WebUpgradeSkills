@@ -1,5 +1,5 @@
-import { renderMain } from './Main.js';
 import { renderCreatePostForm } from './createPost.js';
+import { renderPostsPage } from './posts.js';
 
 export const renderNav = (container) => {
 
@@ -26,7 +26,7 @@ export const renderNav = (container) => {
             const itemText = event.target.innerText;
             switch(itemText){
                 case "Posts":
-                    renderMain(mainContainer);
+                    renderPostsPage(mainContainer);
                     break;
                 case "Write":
                     mainContainer.innerHTML = '';
