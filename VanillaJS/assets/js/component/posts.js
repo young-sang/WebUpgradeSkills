@@ -1,9 +1,9 @@
+import { resetMain } from "../utils.js";
 import { renderSearhForm } from "./search.js";
 
 // 포스트 페이지 렌더링
 export const renderPostsPage = (container) => {
-    container.innerHTML = '';
-    
+    resetMain();
     renderSearhForm(container);
     renderPosts(container);
 };
@@ -21,7 +21,7 @@ export const renderPosts = async (container) => {
                 </article>
             `).join('');
         
-            container.innerHTML += `<section class="post-list">${postsHTML}</section>`;
+            container.innerHTML += `<section id="post-list">${postsHTML}</section>`;
         
             const articles = document.querySelectorAll(".post-card");
             articles.forEach((article, index) => {
@@ -43,7 +43,7 @@ export const renderPosts = async (container) => {
 
 // 개별 Post 페이지 렌더링
 export const renderPost = (container, post) => {
-    container.innerHTML = '';
+    resetMain();
     const postDetail = `
         <h2>${post.title}</h2>
         <p>${post.content}</p>

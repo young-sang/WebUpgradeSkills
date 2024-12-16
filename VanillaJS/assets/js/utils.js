@@ -7,5 +7,4 @@ export const createElement = (tag, attributes = {}, children = {}) => {
 
 export const resetMain = () => {
     document.getElementById('app-content').innerHTML = '';
-
 }

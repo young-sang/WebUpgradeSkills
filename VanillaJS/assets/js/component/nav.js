@@ -26,19 +26,15 @@ export const renderNav = (container) => {
             const itemText = event.target.innerText;
             switch(itemText){
                 case "Posts":
-                    mainContainer.innerHTML = '';
                     renderPostsPage(mainContainer);
                     break;
                 case "Write":
-                    mainContainer.innerHTML = '';
                     renderCreatePostForm(mainContainer);
                     break;
                 case "History":
-                    mainContainer.innerHTML = '';
                     renderHistoryPage(mainContainer);
                     break;
                 case "Options":
-                    mainContainer.innerHTML = '';
                     break;
             }
         });
