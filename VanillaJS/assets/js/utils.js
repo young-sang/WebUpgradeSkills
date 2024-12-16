@@ -4,3 +4,8 @@ export const createElement = (tag, attributes = {}, children = {}) => {
     children.forEach(child => element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child));
     return element;
 };
+
+export const resetMain = () => {
+    document.getElementById('app-content').innerHTML = '';
+
+}

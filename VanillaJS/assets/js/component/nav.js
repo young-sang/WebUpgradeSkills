@@ -1,5 +1,5 @@
-import { renderCreatePostForm } from './createPost.js';
-import { renderPostsPage } from './posts.js';
+import { renderHistoryPage } from './history.js';
+import { renderCreatePostForm, renderPostsPage } from './posts.js';
 
 export const renderNav = (container) => {
 
@@ -26,6 +26,7 @@ export const renderNav = (container) => {
             const itemText = event.target.innerText;
             switch(itemText){
                 case "Posts":
+                    mainContainer.innerHTML = '';
                     renderPostsPage(mainContainer);
                     break;
                 case "Write":
@@ -33,8 +34,11 @@ export const renderNav = (container) => {
                     renderCreatePostForm(mainContainer);
                     break;
                 case "History":
+                    mainContainer.innerHTML = '';
+                    renderHistoryPage(mainContainer);
                     break;
                 case "Options":
+                    mainContainer.innerHTML = '';
                     break;
             }
         });
