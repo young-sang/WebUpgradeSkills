@@ -11,7 +11,7 @@ export const renderPostsPage = (container) => {
 // Post 페이지의 PostList
 export const renderPosts = async (container) => {
     try {
-        await axios.get('./postData.json')
+        await axios.get('./data/postData.json')
         .then(res => {
             const posts = res.data;
 

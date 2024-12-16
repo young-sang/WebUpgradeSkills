@@ -9,7 +9,7 @@ export const renderHistoryPage = (container) => {
 
 export const renderHistory = async (container) => {
     try{
-        const historyData = await axios.get('./history.json');
+        const historyData = await axios.get('./data/history.json');
         const historyHTML = historyData.data.map(history => `
             <article class="post-card">
                 <h2>${history.title}</h2>
@@ -59,7 +59,7 @@ export const createHistory = (container) => {
 
         try {
             // 데이터 전송 코드 작성
-            const data = await axios.get('./history.json');
+            const data = await axios.get('./data/history.json');
 
             // 새로운 데이터 추가
             const newData = {title, description};

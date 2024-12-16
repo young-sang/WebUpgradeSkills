@@ -1,4 +1,5 @@
 import { renderHistoryPage } from './history.js';
+import { renderOptionPage } from './option.js';
 import { renderCreatePostForm, renderPostsPage } from './posts.js';
 
 export const renderNav = (container) => {
@@ -35,6 +36,7 @@ export const renderNav = (container) => {
                     renderHistoryPage(mainContainer);
                     break;
                 case "Options":
+                    renderOptionPage(mainContainer);
                     break;
             }
         });
