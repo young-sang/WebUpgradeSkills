@@ -58,7 +58,7 @@ export const renderCreatePostForm = (container) => {
         <form id="post-form">
             <input type="text" id="title" placeholder="Title" required />
             <textarea id="description" placeholder="Description" required></textarea>
-            <button type="submit">제출</button>
+            <button type="submit">추가</button>
         </form>
     `;
 
