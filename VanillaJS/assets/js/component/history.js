@@ -1,4 +1,4 @@
-import { resetMain } from "../utils.js";
+import { eventManager, resetMain } from "../utils.js";
 
 export const renderHistoryPage = (container) => {
     resetMain();
@@ -51,7 +51,7 @@ export const createHistory = (container) => {
     
     // 폼 제출 시 동작하는 이벤트 리스너
     // 컨테이너에 이벤트 위임
-    form.parentElement.addEventListener('submit', async (event) => {
+    eventManager.add(container, 'submit', async (event) => {
         if(event.target && event.target.matches('form#history-form')){
             // 기본 제출 동작을 막음
             event.preventDefault();  // 페이지 새로 고침 방지

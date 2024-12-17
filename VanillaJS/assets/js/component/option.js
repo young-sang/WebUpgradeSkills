@@ -1,4 +1,4 @@
-import { resetMain } from "../utils.js"
+import { eventManager, resetMain } from "../utils.js"
 
 export const renderOptionPage = (container) => {
     resetMain();
@@ -6,7 +6,7 @@ export const renderOptionPage = (container) => {
     renderItems(container, "category");
     // renderSettingItems(container, "tags");
 
-    container.addEventListener('click', (event) => {
+    eventManager.add(container, 'click', (event) => {
         if(event.target.tagName === "LI"){
             const section = event.target.closest('section');
             const itemKey = section ? section.id.split('-')[0] : null;
@@ -68,8 +68,8 @@ export const renderSettingItems = (container, mode) => {
     }
     container.appendChild(section);
 
-    container.addEventListener('submit', (event) => {
-        if(event.target && event.target.matches("form#optionItemform")){
+    eventManager.add(container, 'submit', (event) => {
+        if(event.target && event.target.matches("form#optionItemForm")){
             event.preventDefault();
             console.log(1);
         }
