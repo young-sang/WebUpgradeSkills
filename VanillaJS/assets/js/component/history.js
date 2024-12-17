@@ -39,17 +39,21 @@ export const renderHistory = async (container) => {
 
 export const createHistory = (container) => {
     // 폼 추가
-    container.innerHTML = `
-        <form id="post-form">
-            <input type="text" id="title" placeholder="Title" required />
-            <textarea id="description" placeholder="Description" required></textarea>
-            <button type="submit">추가</button>
-        </form>
+    const form = document.createElement("form");
+    form.id = "post-form";
+    form.innerHTML = `
+        <input type="text" id="title" placeholder="Title" required />
+        <textarea id="description" placeholder="Description" required></textarea>
+        <button type="submit">추가</button>
     `;
+
+    container.appendChild(form);
     
+    console.log(1);
     // 폼 제출 시 동작하는 이벤트 리스너
     // 컨테이너에 이벤트 위임
-    container.addEventListener('submit', async (event) => {
+    form.addEventListener('submit', async (event) => {
+        console.log(3);
         
         // 기본 제출 동작을 막음
         event.preventDefault();  // 페이지 새로 고침 방지
@@ -69,7 +73,7 @@ export const createHistory = (container) => {
             // await axios.post('./history.json', data.data);
 
             // 제출 후 페이지 갱신
-            renderHistory();
+            renderHistory(container);
             document.getElementById("title").value = '';
             document.getElementById("description").value = '';
             
@@ -77,7 +81,5 @@ export const createHistory = (container) => {
             console.error("에러 발생:", error);
         }
     });
-
-    
-
+    console.log(2);
 };
