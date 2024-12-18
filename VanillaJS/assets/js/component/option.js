@@ -5,6 +5,8 @@ export const renderOptionPage = (container) => {
     renderItems(container, "tags");
     renderItems(container, "category");
     // renderSettingItems(container, "tags");
+    renderVisualMode(container);
+
 
     eventManager.add(container, 'click', (event) => {
         if(event.target.tagName === "LI"){
@@ -12,9 +14,25 @@ export const renderOptionPage = (container) => {
             const itemKey = section ? section.id.split('-')[0] : null;
             if(itemKey){
                 const text = event.target.innerText;
-                console.log(text);
-                renderSettingItems(container, itemKey);
+                
+                renderSettingItems(container, itemKey, "update");
             }
+        }
+        else if (event.target && event.target.matches("button.btnItemAdd")){
+            const section = event.target.closest('section');
+            const itemKey = section ? section.id.split('-')[0] : null;
+            if(itemKey){
+                const text = event.target.innerText;
+                
+                renderSettingItems(container, itemKey, "create");
+            }
+        }
+    });
+
+    eventManager.add(container, 'submit', (event) => {
+        if(event.target && event.target.matches("form#optionItemForm")){
+            event.preventDefault();
+            event.target.parentElement.remove();
         }
     });
 };
@@ -36,11 +54,12 @@ export const renderItems = async (container, itemKey) => {
         `).join('');
 
         container.innerHTML += `
-            <section id="${itemKey}-items">
+            <section id="${itemKey}-items" class="option-Items">
                 <h3>${itemKey}</h3>
                 <ul class="OptionItemList">
                 ${tagsHTML}
                 </ul>
+                <button class="btnItemAdd">+</button>
             </section>
         `;       
         
@@ -50,11 +69,11 @@ export const renderItems = async (container, itemKey) => {
     }
 };
 
-export const renderSettingItems = (container, mode) => {
+export const renderSettingItems = (container, itemMode, mode) => {
     const section = document.createElement("section");
     section.id = "optionItemSet";
     section.innerHTML = `
-        <h3>${mode}</h3>
+        <h3>${itemMode}:${mode}</h3>
         <form id="optionItemForm">
             <input type="text">
             <button type="submit">제출</button>
@@ -66,16 +85,39 @@ export const renderSettingItems = (container, mode) => {
     if(existingForm){
         existingForm.remove();
     }
+
     container.appendChild(section);
 
-    eventManager.add(container, 'submit', (event) => {
-        if(event.target && event.target.matches("form#optionItemForm")){
-            event.preventDefault();
-            console.log(1);
-        }
-    });
+    if(mode == "create"){
+        // 위 OptionItemList의 마지막에 추가
+    }
+    else if(mode == "update"){
+        // 변경
+    }
+
+    
 }
 
-export const visualMode = () => {
-    
+export const renderVisualMode = (container) => {
+    // const themes = ['light', 'dark', 'blue', 'green'];
+    const themes = ['light', 'dark'];
+    let currentThemeIndex = 0;
+
+    const section = document.createElement("section");
+    section.id = "setColor";
+    section.innerHTML = `
+        <button id="color-btn">색 변경</button>
+    `;
+
+    container.appendChild(section);
+
+    container.addEventListener('click', (event) => {
+        if(event.target && event.target.matches("#color-btn")){
+            console.log(1);
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            
+            document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
+        }
+        
+    });
 }

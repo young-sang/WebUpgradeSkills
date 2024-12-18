@@ -1,3 +1,5 @@
+@import url("color.css");
+
 /* Global Styles */
 html{
     width: 100%;
@@ -14,7 +16,7 @@ body {
     padding: 0;
     position: relative;
     box-sizing: border-box;
-    background-color: #f4f4f9;   
+    background-color: var(--background);   
 }
 
 ul{
@@ -24,8 +26,8 @@ ul{
 
 /* 헤더 */
 #app-header {
-    background-color: #333;
-    color: #fff;
+    background-color: var(--sub-background);
+    color: var(--text-color);
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
@@ -49,14 +51,14 @@ header nav ul{
 }
 
 header nav li {
-    color: #fff;
+    color: var(--text-color);
     text-decoration: none;
     font-size: 1rem;
     transition: color 0.3s ease;
 }
 
 header nav li:hover {
-    color: #ffd700;
+    color: var(--text-hover);
 }
 
 
@@ -80,22 +82,22 @@ header nav li:hover {
     flex: 1;
     padding: 10px;
     font-size: 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 5px 0 0 5px;
 }
 
 .search-bar button {
     padding: 10px 15px;
     border: none;
-    background-color: #333;
-    color: #fff;
+    background-color: var(--sub-background);
+    color: var(--text-color);
     font-size: 1rem;
     border-radius: 0 5px 5px 0;
     cursor: pointer;
 }
 
 .search-bar button:hover {
-    background-color: #444;
+    background-color: var(--button-hover);
 }
 
 /* 포스트 리스트 섹션 */
@@ -109,8 +111,8 @@ header nav li:hover {
 
 
 .post-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
+    background-color: var(--text-color);
+    border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 15px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -145,8 +147,8 @@ header nav li:hover {
     right: 0;
     text-align: center;
     padding: 20px;
-    background-color: #333;
-    color: #fff;
+    background-color: var(--sub-background);
+    color: var(--text-color);
     margin-top: 20px;
 }
 
@@ -166,7 +168,7 @@ form input ,form textarea{
     width: 100%;
     padding: 10px;
     font-size: 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 5px 0 0 5px;
 }
 
@@ -175,52 +177,39 @@ form input ,form textarea{
 form button {
     padding: 10px 15px;
     border: none;
-    background-color: #333;
-    color: #fff;
+    background-color: var(--sub-background);
+    color: var(--text-color);
     font-size: 1rem;
     border-radius: 5px;
     cursor: pointer;
 }
 
 form button:hover {
-    background-color: #444;
+    background-color: var(--button-hover);
 }
 
 
 /* 태그 */
 
-#tags-items {
+.option-Items {
     margin: 20px auto;
     padding: 20px;
     max-width: 800px;
-    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--text-color);
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-#category-items h3 {
+.option-Items h3 {
     font-size: 1rem;
     text-align: center;
     margin-top: 0;
     margin-bottom: 10px;
-    color: #007bff;
-}
-
-#category-items {
-    margin: 20px auto;
-    padding: 20px;
-    max-width: 800px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-#tags-items h3 {
-    font-size: 1rem;
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #007bff;
+    color: var(--point-color);
 }
 
 .OptionItemList {
@@ -233,35 +222,50 @@ form button:hover {
 
 .OptionItemList .optionItem {
     padding: 2px 10px;
-    background-color: #f0f8ff;
-    border: 1px solid #007bff;
+    background-color: var(--tag-background);
+    border: 1px solid var(--point-color);
     border-radius: 20px;
     font-size: .5rem;
-    color: #007bff;
+    color: var(--point-color);
     transition: background-color 0.3s, color 0.3s;
 }
 
 .item-card:hover {
-    background-color: #007bff;
-    color: #ffffff;
+    background-color: var(--point-color);
+    color: var(--text-color);
 }
 
-/* 플러스 버튼 */
-#add-item-button {
+#optionItemSet {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 150px;
+    transform: translate(-50%, -50%);
+    background-color: var(--background); /* 보기 위해 추가한 배경색 (선택사항) */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 선택사항 */
+    text-align: center; /* 선택사항 */
+    border-radius: 8px;
+}
+
+#optionItemSet h3{
+    padding-top: 10px;
+}
+
+.OptionItemList{
     display: flex;
-    align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    background-color: #007bff;
-    color: white;
-    font-size: 1.5rem;
+    align-items: center;
+}
+
+.btnItemAdd{
+    width: 20px;
+    height: 20px;
+    background-color: var(--point-color);
+    color: var(--text-color);
+    font-size: .8rem;
     border-radius: 50%;
     border: none;
     /* cursor: pointer; */
     margin-top: 10px;
-}
-
-#add-item-button:hover {
-    background-color: #0056b3;
 }
