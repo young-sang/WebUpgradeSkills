@@ -98,10 +98,12 @@ export const renderSettingItems = (container, itemMode, mode) => {
     
 }
 
-export const renderVisualMode = (container) => {
+export const renderVisualMode = async (container) => {
     // const themes = ['light', 'dark', 'blue', 'green'];
-    const themes = ['light', 'dark'];
+    const data = await axios.get('./data/options.json');
+    const themes = data.data.color;
     let currentThemeIndex = 0;
+    console.log(themes);
 
     const section = document.createElement("section");
     section.id = "setColor";
@@ -115,7 +117,7 @@ export const renderVisualMode = (container) => {
         if(event.target && event.target.matches("#color-btn")){
             console.log(1);
             currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            
+            console.log(themes)
             document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
         }
         

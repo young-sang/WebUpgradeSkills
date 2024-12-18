@@ -1,25 +1,30 @@
 :root{
     --background: #f4f4f9;
     --sub-background : #333;
-    --text-color: #ffffff;
+    --third-background : #f9f9f9;
+    --card-background : #ffffff;
+    --text-100: #ffffff;
+    --text-200: #3b3c3d;
     --text-hover: #ffd700;
     --border-color: #ddd;
     --button-hover: #444;
     --point-color: #007bff;
-    --third-background : #f9f9f9;
     --tag-background: #f0f8ff;
 }
 
 [data-theme="dark"] {
     --background: #fffefb;
     --sub-background : #cccbc8;
-    --text-color: #1d1c1c;
-    --text-hover: #313d44;
+    --third-background : #f5f4f1;
+    --card-background : #d4eaf7;
+    --text-100: #1d1c1c;
+    --text-200: #3b3c3d;
+    --text-hover: #00668c;
     --border-color: #71c4ef;
     --button-hover: #00668c;
     --point-color: #d4eaf7;
-    --third-background : #f5f4f1;
     --tag-background: #f0f8ff;
+    
 }
 /* --primary-100:#d4eaf7;
 --primary-200:#b6ccd8;
