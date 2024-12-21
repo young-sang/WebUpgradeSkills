@@ -1,7 +1,7 @@
 :root{
     --background: #f4f4f9;
     --sub-background : #333;
-    --third-background : #f9f9f9;
+    --third-background : #71c4ef;
     --card-background : #ffffff;
     --text-100: #ffffff;
     --text-200: #3b3c3d;
@@ -23,8 +23,7 @@
     --border-color: #71c4ef;
     --button-hover: #00668c;
     --point-color: #d4eaf7;
-    --tag-background: #f0f8ff;
-    
+    --tag-background: #f0f8ff;   
 }
 /* --primary-100:#d4eaf7;
 --primary-200:#b6ccd8;

@@ -90,7 +90,7 @@ header nav li:hover {
     padding: 10px 15px;
     border: none;
     background-color: var(--sub-background);
-    color: var(--text-color);
+    color: var(--text-100);
     font-size: 1rem;
     border-radius: 0 5px 5px 0;
     cursor: pointer;
@@ -178,7 +178,7 @@ form button {
     padding: 10px 15px;
     border: none;
     background-color: var(--sub-background);
-    color: var(--text-color);
+    color: var(--text-100);
     font-size: 1rem;
     border-radius: 5px;
     cursor: pointer;

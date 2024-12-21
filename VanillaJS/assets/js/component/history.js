@@ -13,6 +13,7 @@ export const renderHistory = async (container) => {
         const historyHTML = historyData.data.map(history => `
             <article class="post-card">
                 <h2>${history.title}</h2>
+                <p>${history.description}</p>
             </article>
         `).join('');
 
