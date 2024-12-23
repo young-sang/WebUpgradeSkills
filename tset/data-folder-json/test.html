@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested Folder Blog</title>
+    <style>
+        #blog {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .folder {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .folder h3 {
+            cursor: pointer;
+            color: #007bff;
+        }
+
+        .folder h3:hover {
+            text-decoration: underline;
+        }
+
+        .children {
+            margin-left: 20px;
+            padding-left: 10px;
+            border-left: 1px solid #ccc;
+        }
+
+        .post {
+            margin: 5px 0;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .post:hover {
+            text-decoration: underline;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div id="blog"></div>
+    <script>
+        const posts = [
+            {
+                id: 1,
+                title: "Folder 1",
+                category: "JS",
+                type: "folder",
+                children: [
+                    { id: 2, title: "Post 1.1", type: "post", content: "This is post 1.1" },
+                    {
+                        id: 3,
+                        title: "Folder 1.1",
+                        type: "folder",
+                        children: [
+                            { id: 4, title: "Post 1.1.1", type: "post", content: "This is post 1.1.1" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Folder 2",
+                category: "HTML",
+                type: "folder",
+                children: [
+                    { id: 6, title: "Post 2.1", type: "post", content: "This is post 2.1" }
+                ]
+            }
+        ];
+
+        const blogContainer = document.getElementById("blog");
+
+        function renderFolder(folder, parentElement) {
+            const folderDiv = document.createElement("div");
+            folderDiv.className = "folder";
+
+            const folderHeader = document.createElement("h3");
+            folderHeader.textContent = folder.title;
+            folderHeader.onclick = () => {
+                const childrenContainer = folderDiv.querySelector(".children");
+                childrenContainer.style.display = 
+                    childrenContainer.style.display === "none" ? "block" : "none";
+            };
+            folderDiv.appendChild(folderHeader);
+
+            const childrenContainer = document.createElement("div");
+            childrenContainer.className = "children";
+            childrenContainer.style.display = "none";
+
+            folder.children.forEach(item => {
+                if (item.type === "folder") {
+                    renderFolder(item, childrenContainer);
+                } else if (item.type === "post") {
+                    const postItem = document.createElement("div");
+                    postItem.className = "post";
+                    postItem.textContent = item.title;
+                    postItem.onclick = () => showPostContent(item);
+                    childrenContainer.appendChild(postItem);
+                }
+            });
+
+            folderDiv.appendChild(childrenContainer);
+            parentElement.appendChild(folderDiv);
+        }
+
+        function showPostContent(post) {
+            alert(`Title: ${post.title}\n\n${post.content}`);
+        }
+
+        posts.forEach(folder => {
+            renderFolder(folder, blogContainer);
+        });
+    </script>
+</body>
+</html>

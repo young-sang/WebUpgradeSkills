@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Editor</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #editor {
+      width: 100%;
+      height: 200px;
+      margin-bottom: 20px;
+    }
+    #preview {
+      border: 1px solid #ddd;
+      padding: 20px;
+      background: #f9f9f9;
+      overflow: auto;
+    }
+    .markdown-body {
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Markdown Editor</h1>
+  <textarea id="editor" placeholder="Write Markdown here..."></textarea>
+  <div id="preview" class="markdown-body">Preview will appear here</div>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="test.js"></script>
+</body>
+</html>
