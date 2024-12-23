@@ -82,7 +82,19 @@ const server = http.createServer((req, res) => {
         })
         return;
 
-    } else {
+    } else if (req.url == '/data/optionData' && req.method == 'GET') {
+        // JSON 데이터 변환
+        getJsonData('options.json')
+            .then(data => {
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(data);
+            })
+            .catch(error => {
+                res.writeHead(500, { 'content-type': 'application/json'});
+                res.end(JSON.stringify(error));
+            });
+        return;
+    }else {
         filePath = './public' + req.url; // public 폴더 내의 파일
     }
 

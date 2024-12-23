@@ -39,8 +39,8 @@ export const renderOptionPage = (container) => {
 
 export const renderItems = async (container, itemKey) => {
     try{
-        const data = await axios.get('./data/options.json');
-        const tags = data.data[itemKey];
+        const data = await (await fetch('http://localhost:3000/data/optionData')).json();
+        const tags = data[itemKey];
 
         if (!tags || tags.length === 0) {
             container.innerHTML += `<p>No items found for ${itemKey}.</p>`;
@@ -100,10 +100,9 @@ export const renderSettingItems = (container, itemMode, mode) => {
 
 export const renderVisualMode = async (container) => {
     // const themes = ['light', 'dark', 'blue', 'green'];
-    const data = await axios.get('./data/options.json');
-    const themes = data.data.color;
+    const data = await (await fetch('http://localhost:3000/data/optionData')).json();
+    const themes = data.color;
     let currentThemeIndex = 0;
-    console.log(themes);
 
     const section = document.createElement("section");
     section.id = "setColor";
@@ -114,10 +113,8 @@ export const renderVisualMode = async (container) => {
     container.appendChild(section);
 
     container.addEventListener('click', (event) => {
-        if(event.target && event.target.matches("#color-btn")){
-            console.log(1);
+        if(event.target && event.target.matches("#color-btn")){            
             currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            console.log(themes)
             document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
         }
         
