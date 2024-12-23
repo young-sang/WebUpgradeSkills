@@ -11,7 +11,7 @@ export const renderPostsPage = (container) => {
 // Post 페이지의 PostList
 export const renderPosts = async (container) => {
     try {
-        const data = await (await fetch('http://localhost:3000/postData')).json();
+        const data = await (await fetch('http://localhost:3000/data/postData')).json();
         
         const posts = data;
             
@@ -50,7 +50,7 @@ export const renderPost = (container, post) => {
 // 포스트 생성 Form
 export const renderCreatePostForm = (container) => {
     const inputFrom = `
-        <form id="post-form" action='http://localhost:3000/postData' method="POST">
+        <form id="post-form" action='http://localhost:3000/data/postData' method="POST">
             <input type="text" id="title" placeholder="Title" required />
             <textarea id="description" placeholder="Description" required></textarea>
             <button type="submit">추가</button>
@@ -78,7 +78,7 @@ export const renderCreatePostForm = (container) => {
                 content: ""
             };
 
-            await fetch('http://localhost:3000/postData', {
+            await fetch('http://localhost:3000/data/postData', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

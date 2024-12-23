@@ -1,28 +1,29 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const querystring = require('querystring');
-const { json } = require('stream/consumers');
+const { getJsonData, addJsonData } = require('./js/utils.js');
+
+// const querystring = require('querystring');
+// const { json } = require('stream/consumers');
 
 const server = http.createServer((req, res) => {
     // 요청된 파일 경로
     let filePath = '.' + req.url;
     if (filePath == './') {
         filePath = './public/index.html'; // 기본 파일 설정
-    } else if (req.url == '/postData' && req.method == 'GET'){
+    } else if (req.url == '/data/postData' && req.method == 'GET'){
         // JSON 데이터 변환
-        const JSONfilePath = path.join(__dirname, "data", 'postData.json');
-        fs.readFile(JSONfilePath, 'utf-8', (err,data) => {
-            if(err){
+        getJsonData('postData.json')
+            .then(data => {
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(data);
+            })
+            .catch(error => {
                 res.writeHead(500, { 'content-type': 'application/json'});
-                res.end(JSON.stringify({error: 'Failed to read the file'}));
-                return;
-            }
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end(data);
-        });
+                res.end(JSON.stringify(error));
+            });
         return;
-    } else if (req.url == '/postData' && req.method == 'POST'){
+    } else if (req.url == '/data/postData' && req.method == 'POST'){
         let body = '';
 
         // 데이터 수신
@@ -30,42 +31,58 @@ const server = http.createServer((req, res) => {
             body += chunk;
         });
 
+        
         req.on('end', () => {
-            try {
-                const data = JSON.parse(body); // 파싱
-                const JSONfilePath = path.join(__dirname, "data", 'postData.json');
-
-                //기존 JSON 데이터 읽기
-                fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
-                    if (err){
-                        res.writeHead(500, {'Content-Type': 'application/json'});
-                        res.end(JSON.stringify({message: 'Error reading Data', err}));
-                        return;
-                    }
-
-                    // 기존 데이터 파싱 후 새로운 데이터 추가
-                    const parsedData = JSON.parse(jsonData);
-                    parsedData.push(data);
-
-                    // 수정된 데이터 다시 저장
-                    fs.writeFile(JSONfilePath, JSON.stringify(parsedData, null, 2), 'utf8', (err) => {
-                        if(err){
-                            res.writeHead(500, {'Content-Type': 'application/json'});
-                            res.end(JSON.stringify({message: 'Error saving Data', err}));
-                            return;
-                        }
-
-                        res.writeHead(200, {'Content-Type': 'application/json'});
-                        res.end(JSON.stringify({message: 'Data added successfull'}));
-                    });
+            addJsonData(body, 'history.json')
+                .then(() => {
+                    res.writeHead(200, {'Content-Type': 'application/json'});
+                    res.end(JSON.stringify({message: 'Data added successfull'}));
+                })
+                .catch(() => {
+                    res.writeHead(500, {'Content-Type': 'application/json'});
+                    res.end(JSON.stringify({message: 'Error saving Data'}));
                 });
-            } catch (err) {
-                res.writeHead(400, {'Content-Type': 'application/json'});
-                res.end(JSON.stringify({message: 'Invalid JSON format'}));
-            }
-        });
+        
+        })
         return;
-    }else {
+
+    } else if (req.url == '/data/historyData' && req.method == 'GET') {
+        // JSON 데이터 변환
+        getJsonData('history.json')
+            .then(data => {
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                console.log(data);
+                res.end(data);
+            })
+            .catch(error => {
+                res.writeHead(500, { 'content-type': 'application/json'});
+                res.end(JSON.stringify(error));
+            });
+        return;
+    } else if (req.url == '/data/historyData' && req.method == 'POST') {
+        let body = '';
+
+        // 데이터 수신
+        req.on('data', chunk => {
+            body += chunk;
+        });
+
+        
+        req.on('end', () => {
+            addJsonData(body, 'history.json')
+                .then(() => {
+                    res.writeHead(200, {'Content-Type': 'application/json'});
+                    res.end(JSON.stringify({message: 'Data added successfull'}));
+                })
+                .catch(() => {
+                    res.writeHead(500, {'Content-Type': 'application/json'});
+                    res.end(JSON.stringify({message: 'Error saving Data'}));
+                });
+        
+        })
+        return;
+
+    } else {
         filePath = './public' + req.url; // public 폴더 내의 파일
     }
 

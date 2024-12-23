@@ -21,3 +21,4 @@ export const eventManager = {
         eventManager.listeners = []; // 초기화
     }
 };
+

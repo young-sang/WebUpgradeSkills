@@ -8,9 +8,11 @@ export const renderHistoryPage = (container) => {
 
 
 export const renderHistory = async (container) => {
+    console.log(1);
     try{
-        const historyData = await axios.get('./data/history.json');
-        const historyHTML = historyData.data.map(history => `
+        const historyData = await (await fetch('http://localhost:3000/data/historyData')).json();
+
+        const historyHTML = historyData.map(history => `
             <article class="post-card">
                 <h2>${history.title}</h2>
                 <p>${history.description}</p>
@@ -42,6 +44,8 @@ export const createHistory = (container) => {
     // 폼 추가
     const form = document.createElement("form");
     form.id = "history-form";
+    form.action = "http://localhost:3000/data/hsitoryData";
+    form.method = 'POST';
     form.innerHTML = `
         <input type="text" id="title" placeholder="Title" required />
         <textarea id="description" placeholder="Description" required></textarea>
@@ -61,25 +65,34 @@ export const createHistory = (container) => {
             const description = document.getElementById('description').value;
 
             try {
-                // 데이터 전송 코드 작성
-                const data = await axios.get('./data/history.json');
+                if(title && description){
+                    
+                    // 새로운 데이터 추가
+                    const newData = {
+                        id: Date.now(),
+                        title: title, 
+                        description: description,
+                        date: Date.now(),
+                    };
+                    
+                    // 데이터 전송 코드 작성
+                    await fetch('http://localhost:3000/data/historyData', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(newData)
+                    })
 
-                // 새로운 데이터 추가
-                const newData = {title, description};
-                data.data.push(newData);
-
-                // 데이터를 서버로 전송할 경우 예시 (axios 사용)
-                // await axios.post('./history.json', data.data);
-
-                // 제출 후 페이지 갱신
-                renderHistory(container);
-                document.getElementById("title").value = '';
-                document.getElementById("description").value = '';
-                
+                    // 제출 후 페이지 갱신
+                    renderHistory(container);
+                    document.getElementById("title").value = '';
+                    document.getElementById("description").value = '';    
+                }
             } catch (error) {
                 console.error("에러 발생:", error);
             }    
         }
         
-    }, {once:true});
+    });
 };
