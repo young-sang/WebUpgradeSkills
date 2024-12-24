@@ -15,7 +15,7 @@ export const renderOptionPage = (container) => {
             if(itemKey){
                 const text = event.target.innerText;
                 
-                renderSettingItems(container, itemKey, "update");
+                renderSettingItems(container, itemKey, "update", parseInt(text));
             }
         }
         else if (event.target && event.target.matches("button.btnItemAdd")){
@@ -24,17 +24,12 @@ export const renderOptionPage = (container) => {
             if(itemKey){
                 const text = event.target.innerText;
                 
-                renderSettingItems(container, itemKey, "create");
+                renderSettingItems(container, itemKey, "create", -1);
             }
         }
     });
 
-    eventManager.add(container, 'submit', (event) => {
-        if(event.target && event.target.matches("form#optionItemForm")){
-            event.preventDefault();
-            event.target.parentElement.remove();
-        }
-    });
+
 };
 
 export const renderItems = async (container, itemKey) => {
@@ -69,13 +64,13 @@ export const renderItems = async (container, itemKey) => {
     }
 };
 
-export const renderSettingItems = (container, itemMode, mode) => {
+export const renderSettingItems = (container, itemMode, mode, index) => {
     const section = document.createElement("section");
     section.id = "optionItemSet";
     section.innerHTML = `
         <h3>${itemMode}:${mode}</h3>
-        <form id="optionItemForm">
-            <input type="text">
+        <form id="optionItemForm" action="http://localhost:3000/data/optionData" method="POST">
+            <input type="text" id="item" required />
             <button type="submit">제출</button>
         </form>
     `;
@@ -88,14 +83,46 @@ export const renderSettingItems = (container, itemMode, mode) => {
 
     container.appendChild(section);
 
-    if(mode == "create"){
-        // 위 OptionItemList의 마지막에 추가
-    }
-    else if(mode == "update"){
-        // 변경
-    }
+    eventManager.add(container, 'submit', async (event) => {
+        if(event.target && event.target.matches("form#optionItemForm")){
+            event.preventDefault();
+            
+            const item = document.getElementById('item').value;
+            let newData;
+            
+            try {
+                const res = await fetch('http://localhost:3000/data/optionData');
+                if(!res.ok){
+                    throw new Error("Failed to fetch data");
+                }
+                const data = await res.json();
 
-    
+                // 데이터 수정 로직
+                if(index === -1) {
+                    data[itemMode].push(item);
+                } else {
+                    data[itemMode][index] = item;
+                }
+
+                // 수정된 데이터 보내기
+                await fetch('http://localhost:3000/data/optionData', {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": 'application/json',
+                    },
+                    body: JSON.stringify({
+                        itemMode,
+                        data: data[itemMode],
+                    }),
+                });
+                console.log("Data updated successfully:", data);
+            } catch (error) {
+                console.error("Error updating data :", error);
+            }
+            
+
+        }
+    });
 }
 
 export const renderVisualMode = async (container) => {

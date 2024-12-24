@@ -94,6 +94,49 @@ const server = http.createServer((req, res) => {
                 res.end(JSON.stringify(error));
             });
         return;
+    } else if (req.url == '/data/optionData' && req.method == 'PUT') {
+        let body = '';
+
+        // 데이터 수신
+        req.on('data', chunk => {
+            body += chunk;
+        });
+
+        
+        req.on('end', () => {
+            const { itemMode, data} = JSON.parse(body);
+
+            // 파일 경로 설정
+            const JSONfilePath = path.join(__dirname, "data", "optionData.json");
+
+            // 기존 데이터 읽기
+            fs.readFile(JSONfilePath, "utf8", (err, jsonData) => {
+                if(err){
+                    res.writeHead(500, {"content-type": "application/json"});
+                    res.end(JSON.stringify({message: "Error reading data", err}));
+                    return;
+                }
+
+                // 데이터 업데이트
+                const parsedData = JSON.parse(jsonData);
+                parsedData[itemMode] = data;
+
+                // 업데이트된 데이터 저장
+                fs.writeFile(JSONfilePath, JSON.stringify(parsedData, null, 2), "utf-8", (err) => {
+                    if (err) {
+                        res.writeHead(500, {"content-type": "application/json"});
+                        res.end(JSON.stringify({message: "Error saving data", err}));
+                        return;
+                    }
+
+                    res.writeHead(200, {"content-type": "application/json"});
+                    res.end(JSON.stringify({message: "Data updated successfully"}));
+                    return;
+                })
+            })
+        
+        })
+        return;
     }else {
         filePath = './public' + req.url; // public 폴더 내의 파일
     }
