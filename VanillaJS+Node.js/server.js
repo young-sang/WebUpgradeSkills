@@ -101,13 +101,12 @@ const server = http.createServer((req, res) => {
         req.on('data', chunk => {
             body += chunk;
         });
-
         
         req.on('end', () => {
             const { itemMode, data} = JSON.parse(body);
 
             // 파일 경로 설정
-            const JSONfilePath = path.join(__dirname, "data", "optionData.json");
+            const JSONfilePath = path.join(__dirname, "data", "options.json");
 
             // 기존 데이터 읽기
             fs.readFile(JSONfilePath, "utf8", (err, jsonData) => {

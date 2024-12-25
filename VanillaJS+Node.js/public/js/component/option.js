@@ -14,8 +14,8 @@ export const renderOptionPage = (container) => {
             const itemKey = section ? section.id.split('-')[0] : null;
             if(itemKey){
                 const text = event.target.innerText;
-                
-                renderSettingItems(container, itemKey, "update", parseInt(text));
+                const num = parseInt(text) - 1
+                renderSettingItems(container, itemKey, "update", num);
             }
         }
         else if (event.target && event.target.matches("button.btnItemAdd")){
@@ -88,7 +88,7 @@ export const renderSettingItems = (container, itemMode, mode, index) => {
             event.preventDefault();
             
             const item = document.getElementById('item').value;
-            let newData;
+            console.log(index);
             
             try {
                 const res = await fetch('http://localhost:3000/data/optionData');
@@ -103,6 +103,7 @@ export const renderSettingItems = (container, itemMode, mode, index) => {
                 } else {
                     data[itemMode][index] = item;
                 }
+                console.log(data);
 
                 // 수정된 데이터 보내기
                 await fetch('http://localhost:3000/data/optionData', {
@@ -120,7 +121,7 @@ export const renderSettingItems = (container, itemMode, mode, index) => {
                 console.error("Error updating data :", error);
             }
             
-
+            renderOptionPage(container);
         }
     });
 }

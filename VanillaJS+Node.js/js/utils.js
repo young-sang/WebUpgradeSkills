@@ -17,6 +17,7 @@ exports.getJsonData = (jsonPath)  => {
     });
 };
 
+// 데이터 추가
 exports.addJsonData = (body, jsonPath) => {
     
     return new Promise((resolve, reject) => {
