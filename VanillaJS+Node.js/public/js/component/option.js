@@ -13,9 +13,10 @@ export const renderOptionPage = (container) => {
             const section = event.target.closest('section');
             const itemKey = section ? section.id.split('-')[0] : null;
             if(itemKey){
+                const num = event.target.dataset.index;
                 const text = event.target.innerText;
-                const num = parseInt(text) - 1
-                renderSettingItems(container, itemKey, "update", num);
+                
+                renderSettingItems(container, itemKey, "update", num, text);
             }
         }
         else if (event.target && event.target.matches("button.btnItemAdd")){
@@ -24,7 +25,7 @@ export const renderOptionPage = (container) => {
             if(itemKey){
                 const text = event.target.innerText;
                 
-                renderSettingItems(container, itemKey, "create", -1);
+                renderSettingItems(container, itemKey, "create", -1, 'new');
             }
         }
     });
@@ -41,22 +42,35 @@ export const renderItems = async (container, itemKey) => {
             container.innerHTML += `<p>No items found for ${itemKey}.</p>`;
             return;
         }
-        
-        const tagsHTML = tags.map(tag => `
-            <li class="optionItem">
-            ${tag}
-            </li>
-        `).join('');
 
-        container.innerHTML += `
-            <section id="${itemKey}-items" class="option-Items">
-                <h3>${itemKey}</h3>
-                <ul class="OptionItemList">
-                ${tagsHTML}
-                </ul>
-                <button class="btnItemAdd">+</button>
-            </section>
-        `;       
+        const itemListSection = document.createElement('section');
+        itemListSection.id = itemKey + "-items";
+        itemListSection.className = "option-Items";
+
+        const itemHeader = document.createElement('h3');
+        itemHeader.innerText = itemKey;
+        
+        const itemUL = document.createElement('ul');
+        itemUL.className = "OptionItemList";
+        
+        let num = 0;
+        tags.forEach(item => {
+            const itemList = document.createElement('li');
+            itemList.className = 'optionItem';
+            itemList.dataset.index = num;
+            itemList.innerText = item;
+            itemUL.appendChild(itemList);
+            num ++;
+        });
+
+        const addItemBtn = document.createElement('button');
+        addItemBtn.className = 'btnItemAdd';
+        addItemBtn.innerText = '+';
+
+        itemListSection.appendChild(itemHeader);
+        itemListSection.appendChild(itemUL);
+        itemListSection.appendChild(addItemBtn);
+        container.appendChild(itemListSection);
         
     }
     catch(error){
@@ -64,11 +78,15 @@ export const renderItems = async (container, itemKey) => {
     }
 };
 
-export const renderSettingItems = (container, itemMode, mode, index) => {
+export const renderSettingItems = (container, itemMode, mode, index, text) => {
+    const background = document.createElement('div');
+    background.id = 'blurBackground';
+
     const section = document.createElement("section");
     section.id = "optionItemSet";
     section.innerHTML = `
-        <h3>${itemMode}:${mode}</h3>
+        <h3>${itemMode}Name:${mode}</h3>
+        <h3>${text}</h3>
         <form id="optionItemForm" action="http://localhost:3000/data/optionData" method="POST">
             <input type="text" id="item" required />
             <button type="submit">제출</button>
@@ -81,7 +99,12 @@ export const renderSettingItems = (container, itemMode, mode, index) => {
         existingForm.remove();
     }
 
-    container.appendChild(section);
+    // 요소 추가
+    background.appendChild(section);
+    container.appendChild(background);
+    
+
+    eventManager.remove(container, 'submit');
 
     eventManager.add(container, 'submit', async (event) => {
         if(event.target && event.target.matches("form#optionItemForm")){
