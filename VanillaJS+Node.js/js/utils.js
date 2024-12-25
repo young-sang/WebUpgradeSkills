@@ -35,6 +35,7 @@ exports.addJsonData = (body, jsonPath) => {
             // 기존 데이터 파싱 후 새로운 데이터 추가
             const parsedData = JSON.parse(jsonData);
             parsedData.push(data);
+            console.log(parsedData);
     
             // 수정된 데이터 다시 저장
             fs.writeFile(JSONfilePath, JSON.stringify(parsedData, null, 2), 'utf8', (err) => {

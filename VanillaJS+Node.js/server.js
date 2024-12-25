@@ -33,7 +33,8 @@ const server = http.createServer((req, res) => {
 
         
         req.on('end', () => {
-            addJsonData(body, 'history.json')
+            console.log(body);
+            addJsonData(body, 'postData.json')
                 .then(() => {
                     res.writeHead(200, {'Content-Type': 'application/json'});
                     res.end(JSON.stringify({message: 'Data added successfull'}));
