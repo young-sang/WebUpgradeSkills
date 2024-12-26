@@ -1,6 +1,6 @@
 import { renderHistoryPage } from './history.js';
 import { renderOptionPage } from './option.js';
-import { renderCreatePostForm, renderPostsPage } from './posts.js';
+import { renderPostForm, renderPostsPage } from './posts.js';
 
 export const renderNav = (container) => {
 
@@ -30,7 +30,7 @@ export const renderNav = (container) => {
                     renderPostsPage(mainContainer);
                     break;
                 case "Write":
-                    renderCreatePostForm(mainContainer);
+                    renderPostForm(mainContainer);
                     break;
                 case "History":
                     renderHistoryPage(mainContainer);

@@ -39,30 +39,98 @@ export const renderPosts = async (container) => {
 // 개별 Post 페이지 렌더링
 export const renderPost = (container, post) => {
     resetMain();
-    const postDetail = `
-        <h2>${post.title}</h2>
-        <p>${post.content}</p>
-    `;
 
-    container.innerHTML = postDetail;
+    // 페이지 변수
+    let optionVisualized = false;
+
+    // 옵션 버튼
+    const optionBtn = document.createElement('i');
+    optionBtn.id = 'optionBtn';
+    optionBtn.className = "bx bx-menu";
+
+    // 포스트 내용
+    const postDetail = document.createElement('div');
+    postDetail.id = 'postDetail';
+
+    const pdHeader = document.createElement('h2');
+    pdHeader.innerText = post.title;
+
+    const pdMain = document.createElement('p');
+    pdMain.innerText = post.content;
+
+    postDetail.appendChild(pdHeader);
+    postDetail.appendChild(pdMain);
+
+    // 컨테이너 추가
+    container.appendChild(optionBtn);
+    container.appendChild(postDetail);
+
+    eventManager.add(container, 'click', (event) => {
+        if(event.target && event.target.matches('i#optionBtn')){
+
+            let optionMenuDiv = document.querySelector('.optionMenuDiv');
+
+            if(!optionVisualized){
+                optionMenuDiv = document.createElement('div');
+                optionMenuDiv.className = 'optionMenuDiv';
+        
+                const optionMenuUL = document.createElement('ul');
+                optionMenuUL.className = 'optionMenuUL';
+        
+                const updateLI = document.createElement('li');
+                updateLI.className = 'postDetailMenu postUpdate';
+                updateLI.innerText = 'Update';
+        
+                const deleteLI = document.createElement('li');
+                deleteLI.className = 'postDetailMenu postDelete';
+                deleteLI.innerText = 'Delete';
+        
+        
+                optionMenuUL.appendChild(updateLI);
+                optionMenuUL.appendChild(deleteLI);
+                optionMenuDiv.appendChild(optionMenuUL);
+                optionBtn.appendChild(optionMenuDiv);
+                optionVisualized = true;
+            }else{
+                if(optionMenuDiv){
+                    optionMenuDiv.remove();
+                }
+                optionVisualized = false;
+            }
+        } else if (event.target && event.target.matches('li.postUpdate')){
+            renderPostForm(container, "update", post);
+        } else if (event.target && event.target.matches('li.postDelete')) {
+            console.log(2);
+        }
+
+    })
 };
 
 // 포스트 생성 Form
-export const renderCreatePostForm = async (container) => {
+export const renderPostForm = async (container, mode = 'create', postData = null) => {
 
     // 초기화
     resetMain();
 
     const optionDatas = await (await fetch('http://localhost:3000/data/optionData')).json();
-
     const tagsList = optionDatas["tags"];
     const categoryList = optionDatas["category"];
 
     // 폼 만들기
-    const postCrateForm = document.createElement('form');
-    postCrateForm.id = "post-form";
-    postCrateForm.action = 'http://localhost:3000/data/postData';
-    postCrateForm.method = 'POST';
+    const postForm = document.createElement('form');
+    postForm.id = "post-form";
+    postForm.action = 'http://localhost:3000/data/postData';
+    postForm.method = 'POST';
+    postForm.action = 'http://localhost:3000/data/postData';
+    
+
+    // 태그 정보
+    const tagDiv = document.createElement('div');
+    tagDiv.id = 'tagDiv';
+
+    const tagDivHeader = document.createElement('h2');
+    tagDivHeader.innerText = 'tag';
+    tagDiv.appendChild(tagDivHeader);
 
     // 태그 설랙선
     const tagSelect = document.createElement('select');
@@ -72,9 +140,21 @@ export const renderCreatePostForm = async (container) => {
         const option = document.createElement('option');
         option.value= data;
         option.innerText = data;
+        if(mode === 'update' && postData.tag === data){
+            option.selected = true;
+        }
         tagSelect.appendChild(option);
     });
+    tagDiv.appendChild(tagSelect);
     
+    // 카테고리 정보
+    const categoryDiv = document.createElement('div');
+    categoryDiv.id = 'categoryDiv';
+
+    const categoryDivHeader = document.createElement('h2');
+    categoryDivHeader.innerText = 'category';
+    categoryDiv.appendChild(categoryDivHeader);
+
     // 카테고리 셀랙션
     const categorySelect = document.createElement('select');
     categorySelect.id = "category";
@@ -83,8 +163,12 @@ export const renderCreatePostForm = async (container) => {
         const option = document.createElement('option');
         option.value= data;
         option.innerText = data;
+        if(mode === 'update' && postData.category === data){
+            option.selected = true;
+        }
         categorySelect.appendChild(option);
     });
+    categoryDiv.appendChild(categorySelect);
     
     // 제목 인풋
     const titleForm = document.createElement('input');
@@ -92,29 +176,35 @@ export const renderCreatePostForm = async (container) => {
     titleForm.id = "title";
     titleForm.placeholder = "title"
     titleForm.required = true;
+    if(mode === "update" && postData.title){
+        titleForm.value = postData.title;
+    }
 
     // 본문 텍스트 에리어
     const descriptionForm = document.createElement('textarea');
     descriptionForm.id = "description";
     descriptionForm.placeholder = "Description";
     descriptionForm.required = true;
+    if(mode === "update" && postData.content){
+        descriptionForm.value = postData.content;
+    }
 
     // 제출 버튼
     const submitForm = document.createElement('button');
     submitForm.type = "submit";
     submitForm.id = "submit-form";
-    submitForm.innerText = "추가"
+    submitForm.innerText = mode === "create" ? "추가" : "수정";
 
     // form에 요소 추가
-    postCrateForm.appendChild(tagSelect);
-    postCrateForm.appendChild(categorySelect);
-    postCrateForm.appendChild(titleForm);
-    postCrateForm.appendChild(descriptionForm);
-    postCrateForm.appendChild(submitForm);
+    postForm.appendChild(tagDiv);
+    postForm.appendChild(categoryDiv);
+    postForm.appendChild(titleForm);
+    postForm.appendChild(descriptionForm);
+    postForm.appendChild(submitForm);
 
 
     //폼을 추가하고, posts 렌더링
-    container.appendChild(postCrateForm);
+    container.appendChild(postForm);
 
 
     eventManager.add(container, "submit", async (event) => {
@@ -130,23 +220,33 @@ export const renderCreatePostForm = async (container) => {
 
             if(title && description){
                 const newData = {
-                    id: Date.now(),
+                    id: mode === "create" ?Date.now() : postData.id,
                     title: title,
                     tag: tag,
                     category: category,
                     content: description,
                 };
     
-                await fetch('http://localhost:3000/data/postData', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(newData)
-                })
-    
-                renderPostsPage(container);
+                try {
+                    const url = 'http://localhost:3000/data/postData';
+
+                    const method = mode === "create" ? "POST" : "PUT";
+
+                    await fetch(url, {
+                        method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(newData)
+                    });
+
+                    renderPostsPage(container);
+                } catch (error){
+                    console.log("Error saving post:", error);
+                }
             }
         }
     });
 }
+
+

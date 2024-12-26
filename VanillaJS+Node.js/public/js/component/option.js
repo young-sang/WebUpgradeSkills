@@ -85,8 +85,11 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
     const section = document.createElement("section");
     section.id = "optionItemSet";
     section.innerHTML = `
-        <h3>${itemMode}Name:${mode}</h3>
-        <h3>${text}</h3>
+        <div>
+            <h3>${itemMode}Name:${mode}</h3>
+            <h3>${text}</h3>
+            
+        </div>
         <form id="optionItemForm" action="http://localhost:3000/data/optionData" method="POST">
             <input type="text" id="item" required />
             <button type="submit">제출</button>

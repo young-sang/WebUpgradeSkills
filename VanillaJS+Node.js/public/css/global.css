@@ -240,7 +240,8 @@ form button:hover {
     top: 50%;
     left: 50%;
     width: 300px;
-    height: 150px;
+    height: auto;
+    padding: 5px;
     transform: translate(-50%, -50%);
     background-color: var(--background); /* 보기 위해 추가한 배경색 (선택사항) */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 선택사항 */
