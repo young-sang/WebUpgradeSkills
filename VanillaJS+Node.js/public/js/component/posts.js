@@ -65,7 +65,7 @@ export const renderPost = (container, post) => {
     container.appendChild(optionBtn);
     container.appendChild(postDetail);
 
-    eventManager.add(container, 'click', (event) => {
+    eventManager.add(container, 'click', async (event) => {
         if(event.target && event.target.matches('i#optionBtn')){
 
             let optionMenuDiv = document.querySelector('.optionMenuDiv');
@@ -100,7 +100,17 @@ export const renderPost = (container, post) => {
         } else if (event.target && event.target.matches('li.postUpdate')){
             renderPostForm(container, "update", post);
         } else if (event.target && event.target.matches('li.postDelete')) {
-            console.log(2);
+            if(post.id){
+                try {
+                    await fetch(`http://localhost:3000/data/postData/${post.id}`, {
+                        method: 'DELETE',
+                    });
+
+                    renderPostsPage(container);
+                } catch (error) {
+                    console.error("Error deleting post:", error);
+                }
+            }
         }
 
     })

@@ -1,12 +1,5 @@
 [
   {
-    "id": 1,
-    "title": "Post 112",
-    "category": "1",
-    "tag": "2",
-    "content": "This is the first post12"
-  },
-  {
     "id": 2,
     "title": "Post 2",
     "category": "JS",

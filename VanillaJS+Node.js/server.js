@@ -98,6 +98,41 @@ const server = http.createServer((req, res) => {
             }        
         });
         return;
+    } else if (req.url.startsWith('/data/postData/') && req.method == 'DELETE') {
+        const urlParts = req.url.split('/');
+        const id = urlParts[urlParts.length -1];
+
+        const JSONfilePath = path.join(__dirname, "data", 'postData.json');
+
+        fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
+            if (err) {
+                res.writeHead(500, {'content-type': 'application/json'});
+                res.end(JSON.stringify({message: 'Error reading data', err}));
+                return;
+            }
+
+            let posts = JSON.parse(jsonData) || [];
+            const filteredPosts = posts.filter((post) => post.id != Number(id));
+
+            if(posts.length === filteredPosts.length){
+                res.writeHead(404, {'content-type': 'application/json'});
+                res.end(JSON.stringify({message: 'Post not found', err}));
+                return;
+            }
+
+            // 수정 데이터 저장
+            fs.writeFile(JSONfilePath, JSON.stringify(filteredPosts, null, 2), 'utf8', (err) => {
+                if (err) {
+                    res.writeHead(500, {'content-type': 'application/json'});
+                    res.end(JSON.stringify({message: 'Error saving data', err}));
+                    return;
+                }
+
+                res.writeHead(200, {'content-type': 'application/json'});
+                res.end(JSON.stringify({message: 'Post deleted successfully'}));
+            });
+        });
+        return;
     }else if (req.url == '/data/historyData' && req.method == 'GET') {
         // JSON 데이터 변환
         getJsonData('history.json')
