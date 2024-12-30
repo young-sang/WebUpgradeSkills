@@ -131,8 +131,6 @@ export const renderPostForm = async (container, mode = 'create', postData = null
     postForm.id = "post-form";
     postForm.action = 'http://localhost:3000/data/postData';
     postForm.method = 'POST';
-    postForm.action = 'http://localhost:3000/data/postData';
-    
 
     // 태그 정보
     const tagDiv = document.createElement('div');

@@ -11,6 +11,12 @@ export const renderOptionPage = (container) => {
 
 
     eventManager.add(container, 'click', (event) => {
+        
+        if(modalPageOn){
+            // console.log("modalPageOn");
+            return;
+        }
+
         if(event.target.tagName === "LI"){
             const section = event.target.closest('section');
             const itemKey = section ? section.id.split('-')[0] : null;
@@ -96,8 +102,13 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
     const itemHeader = document.createElement('div');
     itemHeader.id = 'itemheader';
     itemHeader.innerHTML = `
-        <h3>${itemMode}Name:${mode}</h3>
-        <h3>${text}</h3>
+        <div>
+            <h3>${itemMode}Name:${mode}</h3>
+            <h3>${text}</h3>
+        </div>
+        <div>
+            <i class='bx bx-x'></i>
+        </div>
     `;
 
     const itemForm = document.createElement('form');
@@ -121,11 +132,22 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
         existingForm.remove();
     }
 
+    
+
     itemForm.appendChild(itemInput);
     itemForm.appendChild(itemSubmitBtn);
+    
+
+    // 아이템 삭제 기능
+    if (mode === 'update'){
+        const deleteBtn = document.createElement('button');
+        deleteBtn.id = 'itemDelete';
+        deleteBtn.innerText = '삭제';
+        itemForm.appendChild(deleteBtn);
+    }
+
     section.appendChild(itemHeader);
     section.appendChild(itemForm);
-
 
     // 요소 추가
     background.appendChild(section);
@@ -133,6 +155,39 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
     
 
     eventManager.remove(container, 'submit');
+    eventManager.remove(container, 'click');
+
+    eventManager.add(container, 'click', async (event) => {
+        if(event.target && event.target.matches('i.bx-x')){
+            // 모달 창 꺼짐
+            modalPageOn = false;
+            console.log(modalPageOn);
+
+            renderOptionPage(container);
+        }
+        // 아이템 삭제
+        else if (event.target && event.target.matches("button#itemDelete")){
+            // console.log('delete');
+            
+            // 모달 창 꺼짐
+            modalPageOn = false;
+            console.log(modalPageOn);
+
+            if(itemMode && index){
+                try{
+                    await fetch(`http://localhost:3000/data/optionData/${itemMode}/${index}`, {
+                        method: 'DELETE'
+                    });
+
+                    renderOptionPage(container);
+                }
+                catch (err) {
+                    console.err("Error deleting item:", err);
+                }
+                
+            }
+        }
+    });
 
     eventManager.add(container, 'submit', async (event) => {
         if(event.target && event.target.matches("form#optionItemForm")){
@@ -143,7 +198,7 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
             console.log(modalPageOn);
 
             const item = document.getElementById('item').value;
-            console.log(index);
+            
             
             try {
                 const res = await fetch('http://localhost:3000/data/optionData');
@@ -158,7 +213,7 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
                 } else {
                     data[itemMode][index] = item;
                 }
-                console.log(data);
+                // console.log(data);
 
                 // 수정된 데이터 보내기
                 await fetch('http://localhost:3000/data/optionData', {

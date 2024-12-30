@@ -111,6 +111,7 @@ const server = http.createServer((req, res) => {
                 return;
             }
 
+            // 기존 데이터 불러오기
             let posts = JSON.parse(jsonData) || [];
             const filteredPosts = posts.filter((post) => post.id != Number(id));
 
@@ -223,7 +224,47 @@ const server = http.createServer((req, res) => {
         
         })
         return;
-    }else {
+    } else if (req.url.startsWith('/data/optionData/')  && req.method == 'DELETE') {
+        const urlParts = req.url.split('/');
+        const itemMode = urlParts[urlParts.length - 2];
+        const delIndex = urlParts[urlParts.length - 1];
+
+        const JSONfilePath = path.join(__dirname, "data", "options.json");
+
+        fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
+            if (err) {
+                res.writeHead(500, {'content-type': 'application/json'});
+                res.end(JSON.stringify({message: 'Error reading data', err}));
+                return;
+            }
+
+            // 기존 데이터 불러오기
+            let item = JSON.parse(jsonData) || [];
+            const filtereditemsMode = item[itemMode].filter((_, index) => index != delIndex);
+            
+            if(item[itemMode].length === filtereditemsMode.length){
+                res.writeHead(404, {'content-type': 'application/json'});
+                res.end(JSON.stringify({message: 'Item not found', err}));
+                return;
+            }
+
+            item[itemMode] = filtereditemsMode;
+            const filtereditems = item;
+
+            // 수정 데이터 저장
+            fs.writeFile(JSONfilePath, JSON.stringify(filtereditems, null, 2), 'utf8', (err) => {
+                if (err) {
+                    res.writeHead(500, {'content-type': 'application/json'});
+                    res.end(JSON.stringify({message: 'Error saving data', err}));
+                    return;
+                }
+
+                res.writeHead(200, {'content-type': 'application/json'});
+                res.end(JSON.stringify({message: 'Item deleted successfully'}));
+            });
+        });
+        return;
+    } else {
         filePath = './public' + req.url; // public 폴더 내의 파일
     }
 
