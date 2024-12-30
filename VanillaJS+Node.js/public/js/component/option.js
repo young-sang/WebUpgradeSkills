@@ -1,5 +1,7 @@
 import { eventManager, resetMain } from "../utils.js"
 
+let modalPageOn = false;
+
 export const renderOptionPage = (container) => {
     resetMain();
     renderItems(container, "tags");
@@ -79,28 +81,51 @@ export const renderItems = async (container, itemKey) => {
 };
 
 export const renderSettingItems = (container, itemMode, mode, index, text) => {
+    
+    // 창 켜짐 확인
+    modalPageOn = true;
+    console.log(modalPageOn);
+
+    // dom 요소 추가
     const background = document.createElement('div');
     background.id = 'blurBackground';
 
     const section = document.createElement("section");
     section.id = "optionItemSet";
-    section.innerHTML = `
-        <div>
-            <h3>${itemMode}Name:${mode}</h3>
-            <h3>${text}</h3>
-            
-        </div>
-        <form id="optionItemForm" action="http://localhost:3000/data/optionData" method="POST">
-            <input type="text" id="item" required />
-            <button type="submit">제출</button>
-        </form>
+
+    const itemHeader = document.createElement('div');
+    itemHeader.id = 'itemheader';
+    itemHeader.innerHTML = `
+        <h3>${itemMode}Name:${mode}</h3>
+        <h3>${text}</h3>
     `;
 
+    const itemForm = document.createElement('form');
+    itemForm.id = 'optionItemForm';
+    itemForm.action = 'http://localhost:3000/data/optionData';
+    itemForm.method = 'POST';
+
+    const itemInput = document.createElement('input');
+    itemInput.type = 'text';
+    itemInput.id = 'item';
+    itemInput.required = true;
+
+    const itemSubmitBtn = document.createElement('button');
+    itemSubmitBtn.type = 'submit';
+    itemSubmitBtn.innerText = '제출';
+
+    
     // 이미 존재한다면 삭제 후 생성
     const existingForm = document.getElementById("optionItemSet");
     if(existingForm){
         existingForm.remove();
     }
+
+    itemForm.appendChild(itemInput);
+    itemForm.appendChild(itemSubmitBtn);
+    section.appendChild(itemHeader);
+    section.appendChild(itemForm);
+
 
     // 요소 추가
     background.appendChild(section);
@@ -113,6 +138,10 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
         if(event.target && event.target.matches("form#optionItemForm")){
             event.preventDefault();
             
+            // 모달 창 꺼짐
+            modalPageOn = false;
+            console.log(modalPageOn);
+
             const item = document.getElementById('item').value;
             console.log(index);
             
