@@ -90,7 +90,7 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
     
     // 창 켜짐 확인
     modalPageOn = true;
-    console.log(modalPageOn);
+    // console.log(modalPageOn);
 
     // dom 요소 추가
     const background = document.createElement('div');
@@ -141,18 +141,19 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
 
     itemForm.appendChild(itemInput);
     itemForm.appendChild(itemSubmitBtn);
-    
+
+    section.appendChild(itemHeader);
+    section.appendChild(itemForm);
+
 
     // 아이템 삭제 기능
     if (mode === 'update'){
         const deleteBtn = document.createElement('button');
         deleteBtn.id = 'itemDelete';
         deleteBtn.innerText = '삭제';
-        itemForm.appendChild(deleteBtn);
+        section.appendChild(deleteBtn);
     }
 
-    section.appendChild(itemHeader);
-    section.appendChild(itemForm);
 
     // 요소 추가
     background.appendChild(section);
@@ -166,7 +167,7 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
         if(event.target && event.target.matches('i.bx-x')){
             // 모달 창 꺼짐
             modalPageOn = false;
-            console.log(modalPageOn);
+            // console.log(modalPageOn);
 
             renderOptionPage(container);
         }
@@ -176,20 +177,19 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
             
             // 모달 창 꺼짐
             modalPageOn = false;
-            console.log(modalPageOn);
+            // console.log(modalPageOn);
 
             if(itemMode && index){
                 try{
                     await fetch(`http://localhost:3000/data/optionData/${itemMode}/${index}`, {
                         method: 'DELETE'
                     });
-
+                    resetMain();
                     renderOptionPage(container);
                 }
                 catch (err) {
                     console.err("Error deleting item:", err);
                 }
-                
             }
         }
     });
@@ -200,7 +200,7 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
             
             // 모달 창 꺼짐
             modalPageOn = false;
-            console.log(modalPageOn);
+            // console.log(modalPageOn);
 
             const item = document.getElementById('item').value;
             
@@ -232,11 +232,11 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
                     }),
                 });
                 console.log("Data updated successfully:", data);
+
+                renderOptionPage(container);
             } catch (error) {
                 console.error("Error updating data :", error);
             }
-            
-            renderOptionPage(container);
         }
     });
 }

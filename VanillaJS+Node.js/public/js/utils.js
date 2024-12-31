@@ -26,6 +26,7 @@ export const eventManager = {
 
     // 모든 리스너 제거
     removeAll: () => {
+        console.log('reset');
         eventManager.listeners.forEach(({ element, type, handler }) => {
             element.removeEventListener(type, handler);
         });
@@ -33,3 +34,10 @@ export const eventManager = {
     }
 };
 
+export const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};

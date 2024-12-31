@@ -1,40 +1,56 @@
-import { eventManager, resetMain } from "../utils.js";
+import { eventManager, formatDate, resetMain } from "../utils.js";
+
+let modalPageOn = false;
 
 export const renderHistoryPage = (container) => {
     resetMain();
     createHistory(container);
     renderHistory(container);
+
+    eventManager.add(container, 'click', (event) => {
+        if(event.target && event.target.matches('button.updateBtn')){
+            const postCard = event.target.closest('li.post-card');
+            if(postCard){
+                const num = postCard.dataset.index;
+                renderSettingHistory(container, num);
+            }
+        }
+    });
 };
 
 
 export const renderHistory = async (container) => {
-    console.log(1);
+
     try{
         const historyData = await (await fetch('http://localhost:3000/data/historyData')).json();
 
-        const historyHTML = historyData.map(history => `
-            <article class="post-card">
-                <h2>${history.title}</h2>
-                <p>${history.description}</p>
-            </article>
-        `).join('');
 
-        if(!document.getElementById("post-list")){
-            container.innerHTML += `<section id="post-list"></section>`; 
-        }
+        const historyPostList = document.createElement('ul');
+        historyPostList.id = 'post-list';
 
-        const postList = document.getElementById('post-list');
+        let num = 0;
+        historyData.forEach(item => {
+            const historyPost = document.createElement('li');
+            historyPost.dataset.index = num;
+            historyPost.className = 'post-card';
+            historyPost.innerHTML = `
+                <h2>${item.title}</h2>
+                <p>${item.description}</p>
+                <p>${item.date}</p>
+            `;
 
-        postList.innerHTML = historyHTML;
-    
-        const articles = document.querySelectorAll(".post-card");
-        // articles.forEach((article, index) => {
-        //     article.addEventListener('click', (event) => {
-        //         event.preventDefault();
-                
-        //         renderPost(container, posts[index]);
-        //     });
-        // });
+            const historyUpdateBtn = document.createElement('button');
+            historyUpdateBtn.className = 'updateBtn';
+            historyUpdateBtn.innerText = '수정';
+
+            historyPost.appendChild(historyUpdateBtn);
+            historyPostList.appendChild(historyPost);
+            
+            num ++;
+        });
+
+        container.appendChild(historyPostList);
+
     } catch (error) {
         console.error("2", error);
     }
@@ -56,6 +72,9 @@ export const createHistory = (container) => {
     
     // 폼 제출 시 동작하는 이벤트 리스너
     // 컨테이너에 이벤트 위임
+
+    eventManager.remove(container, 'submit');
+
     eventManager.add(container, 'submit', async (event) => {
         if(event.target && event.target.matches('form#history-form')){
             // 기본 제출 동작을 막음
@@ -72,7 +91,7 @@ export const createHistory = (container) => {
                         id: Date.now(),
                         title: title, 
                         description: description,
-                        date: Date.now(),
+                        date: formatDate(Date.now()),
                     };
                     
                     // 데이터 전송 코드 작성
@@ -85,7 +104,7 @@ export const createHistory = (container) => {
                     })
 
                     // 제출 후 페이지 갱신
-                    renderHistory(container);
+                    renderHistoryPage(container);
                     document.getElementById("title").value = '';
                     document.getElementById("description").value = '';    
                 }
@@ -96,3 +115,146 @@ export const createHistory = (container) => {
         
     });
 };
+
+export const renderSettingHistory = async (container, index) => {
+
+    // 창 켜짐 확인
+    modalPageOn = true;
+    console.log(modalPageOn);
+
+    const data = await (await fetch('http://localhost:3000/data/historyData')).json();
+    
+    const historyItem = data[index];
+
+    // dom 요소 추가
+    const background = document.createElement('div');
+    background.id = 'blurBackground';
+
+    const section = document.createElement('section');
+    section.id = 'historySet';
+
+    const itemHeader = document.createElement('div');
+    itemHeader.id = 'itemheader';
+    itemHeader.innerHTML = `
+        <div>
+            <h3>History Update</h3>
+        </div>
+        <div>
+            <i class='bx bx-x'></i>
+        </div>
+    `;
+
+    const itemForm = document.createElement('form');
+    itemForm.id = 'historyUpdateForm';
+    itemForm.action = 'http://localhost:3000/data/historyData';
+    itemForm.method = 'POST';
+
+    const headerInput = document.createElement('input');
+    headerInput.type = 'text';
+    headerInput.id = 'historyHead';
+    headerInput.required = true;
+    headerInput.value = historyItem.title;
+
+    const descriptionInput = document.createElement('textarea');
+    descriptionInput.id = 'historyDescription';
+    descriptionInput.required = true;
+    descriptionInput.value = historyItem.description;
+
+    const historySubmitBtn = document.createElement('button');
+    historySubmitBtn.type = 'submit';
+    historySubmitBtn.innerText = '수정';
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.id = 'itemDelete';
+    deleteBtn.innerText = '삭제';
+    itemForm.appendChild(deleteBtn);
+
+    itemForm.appendChild(headerInput);
+    itemForm.appendChild(descriptionInput);
+    itemForm.appendChild(historySubmitBtn);
+    
+
+
+    section.appendChild(itemHeader);
+    section.appendChild(itemForm);
+    section.appendChild(deleteBtn);
+
+    background.appendChild(section);
+    container.appendChild(background);
+
+    eventManager.remove(container, 'click');
+    eventManager.remove(container, 'submit');
+
+    eventManager.add(container, 'click', async (event) => {
+       if(event.target && event.target.matches('i.bx-x')){
+            // 모달 창 꺼짐
+            modalPageOn = false;
+            // console.log(modalPageOn);
+
+            renderHistoryPage(container);
+        }
+        // 아이템 삭제
+        else if (event.target && event.target.matches("button#itemDelete")){
+            // console.log('delete');
+
+
+            if(index){
+                try{
+                    await fetch(`http://localhost:3000/data/historyData/${index}`, {
+                        method: 'DELETE'
+                    });
+            
+                    // 모달 창 꺼짐
+                    modalPageOn = false;
+                    // console.log(modalPageOn);
+
+                    renderHistoryPage(container);
+                }
+                catch (err) {
+                    console.err("Error deleting item:", err);
+                }
+            }
+        } 
+    });
+
+
+    eventManager.add(container, 'submit', async (event) => {
+        if(event.target && event.target.matches("form#historyUpdateForm")){
+            event.preventDefault();
+
+            const itemTitle = document.getElementById('historyHead').value;
+            const itemDescription = document.getElementById('historyDescription').value;
+
+            try {
+                const res = await fetch('http://localhost:3000/data/historyData');
+                if(!res.ok){
+                    throw new Error("Failed to fetch data");
+                }
+                const data = await res.json();
+
+                // 데이터 수정 로직
+                data[index]['title'] = itemTitle;
+                data[index]['description'] = itemDescription;
+                
+
+                // 수정된 데이터 보내기
+                await fetch('http://localhost:3000/data/historyData', {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                console.log("Data updated successfully:", data);
+                    
+                // 모달 창 꺼짐
+                modalPageOn = false;
+                // console.log(modalPageOn);
+
+                renderHistoryPage(container);
+            } catch (error) {
+                console.error("Error updating data :", error);
+            }
+        }
+    });
+}
