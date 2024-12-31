@@ -115,11 +115,16 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
     itemForm.id = 'optionItemForm';
     itemForm.action = 'http://localhost:3000/data/optionData';
     itemForm.method = 'POST';
+    
 
     const itemInput = document.createElement('input');
     itemInput.type = 'text';
     itemInput.id = 'item';
     itemInput.required = true;
+    
+    if(text != 'new'){
+        itemInput.value = text;
+    }
 
     const itemSubmitBtn = document.createElement('button');
     itemSubmitBtn.type = 'submit';
