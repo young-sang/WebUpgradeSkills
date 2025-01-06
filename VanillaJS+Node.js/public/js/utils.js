@@ -3,6 +3,12 @@ export const resetMain = () => {
     eventManager.removeAll();
 }
 
+export const removeContainer = (containerId) => {
+    if(containerId){
+        containerId.remove();
+    }
+}
+
 // 이벤트 리스너 관리 객체
 export const eventManager = {
     listeners: [],
@@ -41,3 +47,4 @@ export const formatDate = (timestamp) => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 };
+

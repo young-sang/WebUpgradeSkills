@@ -340,7 +340,9 @@ const server = http.createServer((req, res) => {
             });
         });
         return;
-    } else {
+    } else if (req.url == '/data/optionData' && req.method == 'GET') {
+
+    }else {
         filePath = './public' + req.url; // public 폴더 내의 파일
     }
 

@@ -2,26 +2,30 @@ import { eventManager, resetMain } from "../utils.js";
 import { renderSearhForm } from "./search.js";
 
 // 포스트 페이지 렌더링
-export const renderPostsPage = (container) => {
+export const renderPostsPage = async (container) => {
     resetMain();
     renderSearhForm(container);
-    renderPosts(container);
+
+    const data = await (await fetch('http://localhost:3000/data/postData')).json();
+
+    renderPosts(container, data);
 };
 
 // Post 페이지의 PostList
-export const renderPosts = async (container) => {
-    try {
-        const data = await (await fetch('http://localhost:3000/data/postData')).json();
-        
-        const posts = data;
-            
-        const postsHTML = posts.map(post => `
-            <article class="post-card">
-                <h2>${post.title}</h2>
-            </article>
-        `).join('');
-    
-        container.innerHTML += `<section id="post-list">${postsHTML}</section>`;
+// 최소 한 번 실행
+export const renderPosts = async (container, posts) => {
+    try {            
+        const postListHTML = `
+            <section id="post-list">
+                ${posts.map(post => `
+                    <article class="post-card">
+                        <h2>${post.title}</h2>
+                    </article>
+                `).join('')}
+            </section>
+        `;
+
+        container.innerHTML += postListHTML;
     
         const articles = document.querySelectorAll(".post-card");
         articles.forEach((article, index) => {
@@ -35,6 +39,34 @@ export const renderPosts = async (container) => {
         console.error("2", error);
     }
 };
+
+
+// 포스트 업데이트
+export const updatePostList = (postContainer, posts) => {
+    try{
+        const postsHTML = posts.map(post => `
+            <article class="post-card">
+                <h2>${post.title}</h2>
+            </article>
+        `).join('');
+
+        // 기존 #post-list 내용만 갱신
+        postContainer.innerHTML = postsHTML;
+
+        const article = postContainer.querySelectorAll(".post-card");
+        article.forEach((article, index) => {
+            eventManager.add(article, 'click', (event) => {
+                event.preventDefault();
+
+                renderPost(postContainer, post[index]);
+            });
+        });
+    }
+    catch (err){
+        console.error("Failed to update post list:", err);
+    }
+}
+
 
 // 개별 Post 페이지 렌더링
 export const renderPost = (container, post) => {
