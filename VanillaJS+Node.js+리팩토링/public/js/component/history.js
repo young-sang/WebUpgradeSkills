@@ -11,7 +11,9 @@ export const renderHistoryPage = (container) => {
         if(event.target && event.target.matches('button.updateBtn')){
             const postCard = event.target.closest('li.post-card');
             if(postCard){
-                const num = postCard.dataset.index;
+                const maxIndex = document.querySelectorAll('.post-card').length;
+                const num = maxIndex - postCard.dataset.index - 1;
+
                 renderSettingHistory(container, num);
             }
         }
@@ -29,7 +31,7 @@ export const renderHistory = async (container) => {
         historyPostList.id = 'post-list';
 
         let num = 0;
-        historyData.forEach(item => {
+        historyData.reverse().forEach(item => {
             const historyPost = document.createElement('li');
             historyPost.dataset.index = num;
             historyPost.className = 'post-card';

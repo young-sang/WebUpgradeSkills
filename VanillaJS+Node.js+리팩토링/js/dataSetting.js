@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { sendErrorResponse, sendSuccessResponse } = require('./utils');
 
+const DATA_MODE = ['optionData.json', 'historyData.json', 'postData.json'];
+
 // 데이터 가져오기
 exports.getJsonData = (req, res, JSONfilePath)  => {
 
@@ -54,28 +56,30 @@ exports.updateData = (req, res, JSONfilePath) => {
         
     // 데이터 수신
     req.on('data', chunk => {
+        console.log(chunk);
         body += chunk;
     });
     
     req.on('end', () => {
+        // console.log(dataMode);
         // 받아온 데이터 가공
-        let itemMode = '';
-        let parsedData = '';
+        let itemMode = null;
+        let parsedData = null;
         switch(dataMode){
-            case 'options.json':
+            case DATA_MODE[0]:
                 const tmp = JSON.parse(body);
                 itemMode = tmp.itemMode;
                 parsedData = tmp.data;
                 break;
-            case 'history.json':
+            case DATA_MODE[1]:
                 parsedData = JSON.parse(body);
                 break;
-            case 'postData.json':
+            case DATA_MODE[2]:
                 parsedData = JSON.parse(body);
                 break;
         }
-        console.log(1);
-        console.log(itemMode);
+        // console.log(1);
+        // console.log(parsedData);
         
 
         // 기존 데이터 읽기
@@ -87,14 +91,14 @@ exports.updateData = (req, res, JSONfilePath) => {
             // 데이터 가공
             let updateData = {};
             switch(dataMode){
-                case 'options.json':
+                case DATA_MODE[0]:
                     updateData = JSON.parse(jsonData);
                     updateData[itemMode] = parsedData;
                     break;
-                case 'history.json':
+                case DATA_MODE[1]:
                     updateData = parsedData;
                     break;
-                case 'postData.json':
+                case DATA_MODE[2]:
                     updateData = JSON.parse(jsonData) || [];
                     const postIndex = updateData.findIndex((post) => post.id == parsedData.id);
 
@@ -129,7 +133,7 @@ exports.deleteData = (req, res, JSONfilePath) => {
     let itemMode = '';
     const dataMode = JSONfilePath.split('\\').at(-1);
 
-    if(dataMode === 'options.json'){
+    if(dataMode === DATA_MODE[0]){
         itemMode = urlParts[urlParts.length - 2];
     }
 
@@ -143,7 +147,7 @@ exports.deleteData = (req, res, JSONfilePath) => {
         let filtereditems = [];
 
         switch(dataMode){
-            case 'postData.json':
+            case DATA_MODE[2]:
                 filtereditems = item.filter((post) => post.id != Number(delIndex));
                 console.log(filtereditems);
                 
@@ -151,7 +155,7 @@ exports.deleteData = (req, res, JSONfilePath) => {
                     sendErrorResponse(res, 404, err);
                 }
                 break;
-            case 'history.json':
+            case DATA_MODE[1]:
                 filtereditems = item.filter((_, index) => index != delIndex);
                 
     
@@ -159,7 +163,8 @@ exports.deleteData = (req, res, JSONfilePath) => {
                     sendErrorResponse(res, 404, err);
                 }
                 break;
-            case 'options.json':                
+            case DATA_MODE[0]:
+                // console.log(item[itemMode]);
                 const filtereditemsMode = item[itemMode].filter((_, index) => index != delIndex);
                 
                 if(item[itemMode].length === filtereditemsMode.length){

@@ -1,3 +1,4 @@
+import { resetMain } from '../utils.js';
 import { renderNav } from './nav.js';
 import { renderPostsPage } from './posts.js';
 
@@ -16,6 +17,7 @@ export const renderHeader = (container) => {
     const backToMain = document.getElementById("toMain");
 
     backToMain.addEventListener('click', () => {
-        renderPostsPage(container);
+        resetMain();
+        renderPostsPage(document.getElementById('app-content'));
     });
 };

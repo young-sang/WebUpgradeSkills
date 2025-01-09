@@ -17,7 +17,7 @@ export const renderPosts = async (container, posts) => {
     try {            
         const postListHTML = `
             <section id="post-list">
-                ${posts.map(post => `
+                ${posts.slice().reverse().map(post => `
                     <article class="post-card">
                         <h2>${post.title}</h2>
                     </article>
@@ -31,8 +31,11 @@ export const renderPosts = async (container, posts) => {
         articles.forEach((article, index) => {
             article.addEventListener('click', (event) => {
                 event.preventDefault();
+
+                const maxIndex = document.querySelectorAll('.post-card').length;
+                const num = maxIndex - index - 1;
                 
-                renderPost(container, posts[index]);
+                renderPost(container, posts[num]);
             });
         });
     } catch (error) {
