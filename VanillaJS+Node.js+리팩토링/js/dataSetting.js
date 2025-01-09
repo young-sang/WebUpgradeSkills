@@ -74,7 +74,8 @@ exports.updateData = (req, res, JSONfilePath) => {
                 parsedData = JSON.parse(body);
                 break;
         }
-        console.log(parsedData);
+        console.log(1);
+        console.log(itemMode);
         
 
         // 기존 데이터 읽기
@@ -82,7 +83,6 @@ exports.updateData = (req, res, JSONfilePath) => {
             if (err) {
                 sendErrorResponse(res, 500, err);
             }
-            // console.log(1);
 
             // 데이터 가공
             let updateData = {};

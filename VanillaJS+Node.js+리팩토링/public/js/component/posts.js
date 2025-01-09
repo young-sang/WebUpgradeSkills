@@ -17,7 +17,7 @@ export const renderPosts = async (container, posts) => {
     try {            
         const postListHTML = `
             <section id="post-list">
-                ${posts.slice().reverse().map(post => `
+                ${posts.map(post => `
                     <article class="post-card">
                         <h2>${post.title}</h2>
                     </article>

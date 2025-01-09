@@ -29,7 +29,7 @@ export const renderHistory = async (container) => {
         historyPostList.id = 'post-list';
 
         let num = 0;
-        historyData.reverse().forEach(item => {
+        historyData.forEach(item => {
             const historyPost = document.createElement('li');
             historyPost.dataset.index = num;
             historyPost.className = 'post-card';
@@ -43,7 +43,7 @@ export const renderHistory = async (container) => {
             historyUpdateBtn.className = 'updateBtn';
             historyUpdateBtn.innerText = '수정';
 
-            historyPost.insertBefore(historyUpdateBtn, historyPost.firstChild);
+            historyPost.appendChild(historyUpdateBtn);
             historyPostList.appendChild(historyPost);
             
             num ++;
