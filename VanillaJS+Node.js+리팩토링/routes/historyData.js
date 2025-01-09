@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { getJsonData, addJsonData, updateData, deleteData } = require('../js/dataSetting.js');
 
-const JSON_FILE_PATH = path.join(__dirname, "../data", 'history.json');
+const JSON_FILE_PATH = path.join(__dirname, "../data", 'historyData.json');
 
 const historyDataHandler = (req, res) => {
     if (req.method == 'GET') {

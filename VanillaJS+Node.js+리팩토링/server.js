@@ -4,6 +4,7 @@ const path = require('path');
 const postDataHandler = require('./routes/postData.js');
 const historyDataHandler = require('./routes/historyData.js');
 const optionDataHandler = require('./routes/optionData.js');
+const { sendErrorResponse, sendSuccessResponse } = require('./js/utils.js');
 
 // const querystring = require('querystring');
 // const { json } = require('stream/consumers');
@@ -57,9 +58,7 @@ const server = http.createServer((req, res) => {
 function sendFile(filePath, contentType, res) {
     fs.access(filePath, fs.constants.F_OK, (err) => {
         if (err) {
-            // 파일이 없을 경우
-            res.writeHead(404, { 'Content-Type': 'text/plain' });
-            res.end('File not found');
+            sendErrorResponse(res, 404, err);
             return;
         }
 
@@ -67,14 +66,12 @@ function sendFile(filePath, contentType, res) {
         fs.readFile(filePath, (err, data) => {
             if (err) {
                 // 파일 읽기 에러 발생 시
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end('Error reading file');
+                sendErrorResponse(res, 500, err);
                 return;
             }
 
             // 정상적인 경우
-            res.writeHead(200, { 'Content-Type': contentType });
-            res.end(data);
+            sendSuccessResponse(res, 200, data);
         });
     });
 }

@@ -1,8 +1,10 @@
+// 메인 컨테이너 리셋
 export const resetMain = () => {
     document.getElementById('app-content').innerHTML = '';
     eventManager.removeAll();
 }
 
+// 컨테이너 비우기
 export const removeContainer = (containerId) => {
     if(containerId){
         containerId.remove();

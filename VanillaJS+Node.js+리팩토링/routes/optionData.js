@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { getJsonData, addJsonData, updateData, deleteData } = require('../js/dataSetting.js');
 
-const JSON_FILE_PATH = path.join(__dirname, "../data", 'options.json');
+const JSON_FILE_PATH = path.join(__dirname, "../data", 'optionData.json');
 
 const optionDataHandler = (req, res) => {
     if (req.method == 'GET') {

@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { sendErrorResponse, sendSuccessResponse } = require('./utils');
 
-// json 데이터 가져오기
+// 데이터 가져오기
 exports.getJsonData = (req, res, JSONfilePath)  => {
 
     fs.readFile(JSONfilePath, 'utf8', (err, data) => {
@@ -47,6 +47,7 @@ exports.addJsonData = (req, res, JSONfilePath) => {
     return;
 };
 
+// 데이터 업데이트
 exports.updateData = (req, res, JSONfilePath) => {
     let body = '';
     const dataMode = JSONfilePath.split('\\').at(-1);
@@ -120,6 +121,7 @@ exports.updateData = (req, res, JSONfilePath) => {
     return; 
 }
 
+// 데이터 삭제
 exports.deleteData = (req, res, JSONfilePath) => {
     
     const urlParts = req.url.split('/');
