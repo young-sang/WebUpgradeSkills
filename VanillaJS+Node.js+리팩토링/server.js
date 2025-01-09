@@ -69,9 +69,8 @@ function sendFile(filePath, contentType, res) {
                 sendErrorResponse(res, 500, err);
                 return;
             }
-
-            // 정상적인 경우
-            sendSuccessResponse(res, 200, data);
+            res.writeHead(200, { 'Content-Type': contentType });
+            res.end(data);
         });
     });
 }
