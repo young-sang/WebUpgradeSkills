@@ -17,7 +17,7 @@ export const renderPosts = async (container, posts) => {
     try {            
         const postListHTML = `
             <section id="post-list">
-                ${posts.map(post => `
+                ${posts.slice().reverse().map(post => `
                     <article class="post-card">
                         <h2>${post.title}</h2>
                     </article>
@@ -71,7 +71,6 @@ export const updatePostList = (postContainer, posts) => {
 // 개별 Post 페이지 렌더링
 export const renderPost = (container, post) => {
     resetMain();
-    console.log(post);
 
     // 페이지 변수
     let optionVisualized = false;

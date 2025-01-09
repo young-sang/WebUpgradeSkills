@@ -58,7 +58,10 @@ const server = http.createServer((req, res) => {
 function sendFile(filePath, contentType, res) {
     fs.access(filePath, fs.constants.F_OK, (err) => {
         if (err) {
-            sendErrorResponse(res, 404, err);
+                        // 파일이 없을 경우
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('File not found');
+            
             return;
         }
 
@@ -66,7 +69,9 @@ function sendFile(filePath, contentType, res) {
         fs.readFile(filePath, (err, data) => {
             if (err) {
                 // 파일 읽기 에러 발생 시
-                sendErrorResponse(res, 500, err);
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.end('Error reading file');
+
                 return;
             }
             res.writeHead(200, { 'Content-Type': contentType });
