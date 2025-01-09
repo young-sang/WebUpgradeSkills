@@ -129,7 +129,7 @@ exports.deleteData = (req, res, JSONfilePath) => {
     let itemMode = '';
     const dataMode = JSONfilePath.split('\\').at(-1);
 
-    if(jsonPath === 'options.json'){
+    if(dataMode === 'options.json'){
         itemMode = urlParts[urlParts.length - 2];
     }
 
