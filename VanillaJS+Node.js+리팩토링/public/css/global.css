@@ -215,6 +215,7 @@ form button:hover {
 .option-Items {
     margin: 20px auto;
     padding: 20px;
+    width: 90%;
     max-width: 800px;
     display: flex;
     flex-direction: column;
