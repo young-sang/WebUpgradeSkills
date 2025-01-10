@@ -56,7 +56,6 @@ exports.updateData = (req, res, JSONfilePath) => {
         
     // 데이터 수신
     req.on('data', chunk => {
-        console.log(chunk);
         body += chunk;
     });
     

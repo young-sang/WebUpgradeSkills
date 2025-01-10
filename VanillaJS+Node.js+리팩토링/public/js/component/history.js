@@ -29,6 +29,7 @@ export const renderHistory = async (container) => {
 
         const historyPostList = document.createElement('ul');
         historyPostList.id = 'post-list';
+        historyPostList.className = "scrollable-container";
 
         let num = 0;
         historyData.reverse().forEach(item => {
