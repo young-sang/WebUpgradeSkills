@@ -26,6 +26,12 @@ export const renderHistory = async (container) => {
     try{
         const historyData = await (await fetch('http://localhost:3000/data/historyData')).json();
 
+        if(!historyData || historyData.length === 0){
+            const noneHistoryHTML = document.createElement('p');
+            noneHistoryHTML.innerText = 'No history found.';
+            container.appendChild(noneHistoryHTML);
+            return;
+        }
 
         const historyPostList = document.createElement('ul');
         historyPostList.id = 'post-list';
@@ -198,26 +204,22 @@ export const renderSettingHistory = async (container, index) => {
         }
         // 아이템 삭제
         else if (event.target && event.target.matches("button#itemDelete")){
-            // console.log('delete');
+            try{
+                console.log(index);
+                await fetch(`http://localhost:3000/data/historyData/${index}`, {
+                    method: 'DELETE'
+                });
+        
+                // 모달 창 꺼짐
+                modalPageOn = false;
+                // console.log(modalPageOn);
 
-
-            if(index){
-                try{
-                    await fetch(`http://localhost:3000/data/historyData/${index}`, {
-                        method: 'DELETE'
-                    });
-            
-                    // 모달 창 꺼짐
-                    modalPageOn = false;
-                    // console.log(modalPageOn);
-
-                    renderHistoryPage(container);
-                }
-                catch (err) {
-                    console.err("Error deleting item:", err);
-                }
+                renderHistoryPage(container);
             }
-        } 
+            catch (err) {
+                console.err("Error deleting item:", err);
+            }
+        }
     });
 
 

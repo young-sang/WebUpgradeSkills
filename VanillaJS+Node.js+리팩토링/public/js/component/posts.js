@@ -14,7 +14,15 @@ export const renderPostsPage = async (container) => {
 // Post 페이지의 PostList
 // 최소 한 번 실행
 export const renderPosts = async (container, posts) => {
-    try {            
+    try {    
+        if(!posts || posts.length === 0){
+            const nonePostHTML = document.createElement('p');
+            nonePostHTML.innerText = 'No Post found.';
+            container.appendChild(nonePostHTML);
+            return;
+        }
+
+
         const postListHTML = `
             <section id="post-list" class="scrollable-container">
                 ${posts.slice().reverse().map(post => `

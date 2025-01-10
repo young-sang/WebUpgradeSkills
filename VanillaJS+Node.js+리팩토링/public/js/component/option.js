@@ -46,11 +46,6 @@ export const renderItems = async (container, itemKey) => {
         const data = await (await fetch('http://localhost:3000/data/optionData')).json();
         const tags = data[itemKey];
 
-        if (!tags || tags.length === 0) {
-            container.innerHTML += `<p>No items found for ${itemKey}.</p>`;
-            return;
-        }
-
         const itemListSection = document.createElement('section');
         itemListSection.id = itemKey + "-items";
         itemListSection.className = "option-Items";

@@ -126,11 +126,11 @@ exports.updateData = (req, res, JSONfilePath) => {
 
 // 데이터 삭제
 exports.deleteData = (req, res, JSONfilePath) => {
-    
     const urlParts = req.url.split('/');
     const delIndex = urlParts[urlParts.length -1];
     let itemMode = '';
     const dataMode = JSONfilePath.split('\\').at(-1);
+
 
     if(dataMode === DATA_MODE[0]){
         itemMode = urlParts[urlParts.length - 2];
