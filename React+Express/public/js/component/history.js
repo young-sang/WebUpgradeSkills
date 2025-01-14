@@ -205,8 +205,7 @@ export const renderSettingHistory = async (container, index) => {
         // 아이템 삭제
         else if (event.target && event.target.matches("button#itemDelete")){
             try{
-                console.log(index);
-                await fetch(`http://localhost:3000/data/historyData/${index}`, {
+                await fetch(`http://localhost:3000/data/historyData?index=${index}`, {
                     method: 'DELETE'
                 });
         
@@ -238,10 +237,9 @@ export const renderSettingHistory = async (container, index) => {
                 const data = await res.json();
 
                 // 데이터 수정 로직
-                data[index]['title'] = itemTitle;
-                data[index]['description'] = itemDescription;
+                data.data[index]['title'] = itemTitle;
+                data.data[index]['description'] = itemDescription;
                 
-
                 // 수정된 데이터 보내기
                 await fetch('http://localhost:3000/data/historyData', {
                     method: 'PUT',

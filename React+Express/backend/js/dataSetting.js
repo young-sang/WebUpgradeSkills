@@ -18,7 +18,6 @@ exports.getJsonData = (req, res, JSONfilePath)  => {
 // 데이터 추가
 exports.addJsonData = (req, res, JSONfilePath) => {
     const newdata = req.body; 
-    console.log(req.data);
 
     //기존 JSON 데이터 읽기
     fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
@@ -43,8 +42,23 @@ exports.addJsonData = (req, res, JSONfilePath) => {
 // 데이터 업데이트
 exports.updateData = (req, res, JSONfilePath) => {
     const dataMode = JSONfilePath.split('\\').at(-1);
-    const { itemMode, data} = req.body;
-    
+
+    let itemMode = '';
+    let data = '';
+
+    switch(dataMode){
+        case DATA_MODE[0]: //옵션
+            itemMode = req.body.itemMode;
+            data = req.body.data;
+            break;
+        case DATA_MODE[1]:
+            data = req.body.data;
+            break;
+        case DATA_MODE[2]:
+            data = req.body.data;
+            break;
+    }
+
 
     // 기존 데이터 읽기
     fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
@@ -62,7 +76,7 @@ exports.updateData = (req, res, JSONfilePath) => {
                 parsedData = data;
                 break;
             case DATA_MODE[2]:
-                const postIndex = updateData.findIndex((post) => post.id == data.id);
+                const postIndex = parsedData.findIndex((post) => post.id == data.id);
 
                 if(postIndex === -1){
                     return sendErrorResponse(res, 404, err);
@@ -91,9 +105,9 @@ exports.deleteData = (req, res, JSONfilePath) => {
     // const delIndex = urlParts[urlParts.length -1];
     // let itemMode = '';
     // const dataMode = JSONfilePath.split('\\').at(-1);
-    const delIndex = req.query.id;
+    const delIndex = req.query.index;
     const dataMode = path.basename(JSONfilePath);
-    const itemMode = req.query.itemMode;
+    const itemMode = req.query.itemMode ? req.query.itemMode : '';
 
 
     fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
@@ -105,10 +119,10 @@ exports.deleteData = (req, res, JSONfilePath) => {
 
         switch(dataMode){
             case DATA_MODE[2]:
-                parsedData = item.filter((post) => post.id != delIndex);
+                parsedData = parsedData.filter((post) => post.id != delIndex);
                 break;
             case DATA_MODE[1]:
-                parsedData = item.filter((_, index) => index != delIndex);
+                parsedData = parsedData.filter((_, index) => index != delIndex);
                 break;
             case DATA_MODE[0]:
                 parsedData[itemMode] = parsedData[itemMode].filter((_, index) => index != delIndex);

@@ -213,7 +213,6 @@ export const renderSettingItems = (container, itemMode, mode, index, text) => {
                 } else {
                     data.data[itemMode][index] = item;
                 }
-                console.log(data);
 
                 // 수정된 데이터 보내기
                 await fetch('http://localhost:3000/data/optionData', {

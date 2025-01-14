@@ -43,7 +43,7 @@ export const renderPosts = async (container, posts) => {
                 const maxIndex = document.querySelectorAll('.post-card').length;
                 const num = maxIndex - index - 1;
                 
-                renderPost(container, posts[num]);
+                renderPost(container, posts.data[num]);
             });
         });
 
@@ -147,7 +147,7 @@ export const renderPost = (container, post) => {
         } else if (event.target && event.target.matches('li.postDelete')) {
             if(post.id){
                 try {
-                    await fetch(`http://localhost:3000/data/postData/${post.id}`, {
+                    await fetch(`http://localhost:3000/data/postData?index=${post.id}`, {
                         method: 'DELETE',
                     });
 
