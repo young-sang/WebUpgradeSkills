@@ -8,8 +8,11 @@ function App() {
       <Header />
       <Router>
         <Routes>
-          <Route path="/" element={< />}></Route>
-          <Route path="/" element={< />}></Route>
+          <Route path="/" element={<PostPage />} />
+          <Route path="/Post" element={<PostPage />} />
+          <Route path="/Write" element={<WritePage />} />
+          <Route path="/History" element={<HistoryPage />} />
+          <Route path="/Options" element={<OptionPage />} />
         </Routes>
       </Router>
       <Footer />
