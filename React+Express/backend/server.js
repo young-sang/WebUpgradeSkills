@@ -1,87 +1,31 @@
-const http = require('http');
-const fs = require('fs');
+const express = require('express');
 const path = require('path');
-const postDataHandler = require('./routes/postData.js');
-const historyDataHandler = require('./routes/historyData.js');
-const optionDataHandler = require('./routes/optionData.js');
-const { sendErrorResponse, sendSuccessResponse } = require('./js/utils.js');
+const bodyParser = require('body-parser');
+const app = express();
 
-// const querystring = require('querystring');
-// const { json } = require('stream/consumers');
+const PORT = 3000;
 
-const server = http.createServer((req, res) => {
-    // 요청된 파일 경로
-    let filePath = '.' + req.url;
+//
+// app.use(bodyParser.json());
+app.use(express.json());
 
-    if (filePath == './') {
-        filePath = './public/index.html'; // 기본 파일 설정
-    } else if (req.url.startsWith('/data/postData/') && req.method == 'DELETE') {
-        postDataHandler(req, res);
-        return;
-    } else if (req.url === '/data/postData') {
-        postDataHandler(req, res);
-        return;
-    } else if (req.url.startsWith('/data/historyData/') && req.method == 'DELETE') {
-        historyDataHandler(req, res);
-        return;
-    } else if (req.url == '/data/historyData') {
-        historyDataHandler(req, res);
-        return;
-    } else if (req.url.startsWith('/data/optionData/') && req.method == 'DELETE') {
-        optionDataHandler(req, res);
-        return;
-    } else if (req.url == '/data/optionData') {
-        optionDataHandler(req, res);
-        return;
-    } else {
-        filePath = './public' + req.url; // public 폴더 내의 파일
-    }
 
-    // 파일 확장자 추출
-    const extname = String(path.extname(filePath)).toLowerCase();
+// 라우트 파일 가져오기
+const postDataRouter = require('./routes/postData.js');
+const historyDataRouter = require('./routes/historyData.js');
+const optionDataRouter = require('./routes/optionData.js');
 
-    // MIME 타입 설정
-    const mimeTypes = {
-        '.html': 'text/html',
-        '.css': 'text/css',
-        '.js': 'application/javascript',
-        '.png': 'image/png',
-        '.jpg': 'image/jpeg',
-        '.gif': 'image/gif',
-    };
 
-    const contentType = mimeTypes[extname] || 'application/octet-stream';
-    sendFile(filePath, contentType, res);
+// 미들웨어로 라우트 등록
+app.use('/data/postData', postDataRouter);
+app.use('/data/historyData', historyDataRouter);
+app.use('/data/optionData', optionDataRouter);
+
+// 정적 파일 경로 설정
+app.use(express.static(path.join(__dirname, '../public')));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-
-function sendFile(filePath, contentType, res) {
-    fs.access(filePath, fs.constants.F_OK, (err) => {
-        if (err) {
-                        // 파일이 없을 경우
-            res.writeHead(404, { 'Content-Type': 'text/plain' });
-            res.end('File not found');
-            
-            return;
-        }
-
-        // 파일이 있을 경우
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                // 파일 읽기 에러 발생 시
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end('Error reading file');
-
-                return;
-            }
-            res.writeHead(200, { 'Content-Type': contentType });
-            res.end(data);
-        });
-    });
-}
-
-
-// 서버 포트 설정
-server.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

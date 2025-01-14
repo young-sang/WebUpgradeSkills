@@ -41,11 +41,11 @@ exports.addJsonData = (req, res, JSONfilePath) => {
 
 // 데이터 업데이트
 exports.updateData = (req, res, JSONfilePath) => {
-    const dataMode = JSONfilePath.split('\\').at(-1);
+    const dataMode = path.basename(JSONfilePath);
 
     let itemMode = '';
     let data = '';
-
+    
     switch(dataMode){
         case DATA_MODE[0]: //옵션
             itemMode = req.body.itemMode;
@@ -55,10 +55,10 @@ exports.updateData = (req, res, JSONfilePath) => {
             data = req.body.data;
             break;
         case DATA_MODE[2]:
-            data = req.body.data;
+            data = req.body;
             break;
     }
-
+    
 
     // 기존 데이터 읽기
     fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
@@ -101,10 +101,6 @@ exports.updateData = (req, res, JSONfilePath) => {
 
 // 데이터 삭제
 exports.deleteData = (req, res, JSONfilePath) => {
-    // const urlParts = req.url.split('/');
-    // const delIndex = urlParts[urlParts.length -1];
-    // let itemMode = '';
-    // const dataMode = JSONfilePath.split('\\').at(-1);
     const delIndex = req.query.index;
     const dataMode = path.basename(JSONfilePath);
     const itemMode = req.query.itemMode ? req.query.itemMode : '';
