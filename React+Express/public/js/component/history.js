@@ -246,7 +246,7 @@ export const renderSettingHistory = async (container, index) => {
                     headers: {
                         "Content-Type": 'application/json',
                     },
-                    body: JSON.stringify(data),
+                    body: JSON.stringify(data.data),
                 });
                 console.log("Data updated successfully:", data);
                     

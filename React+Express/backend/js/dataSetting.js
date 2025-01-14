@@ -45,14 +45,14 @@ exports.updateData = (req, res, JSONfilePath) => {
 
     let itemMode = '';
     let data = '';
-    
+    console.log(req.body);
     switch(dataMode){
         case DATA_MODE[0]: //옵션
             itemMode = req.body.itemMode;
             data = req.body.data;
             break;
         case DATA_MODE[1]:
-            data = req.body.data;
+            data = req.body;
             break;
         case DATA_MODE[2]:
             data = req.body;
