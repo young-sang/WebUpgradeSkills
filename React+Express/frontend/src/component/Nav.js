@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 const Nav = () => {
     return (
         <nav>
-            <ul>
-                <li><Link to="/postList">Posts</Link></li>
-                <li><Link to="/write">Write</Link></li>
-                <li><Link to="/history">History</Link></li>
-                <li><Link to="/options">Options</Link></li>
+            <ul className="items">
+                <li className="item"><Link to="/postList">Posts</Link></li>
+                <li className="item"><Link to="/write">Write</Link></li>
+                <li className="item"><Link to="/history">History</Link></li>
+                <li className="item"><Link to="/options">Options</Link></li>
             </ul>
         </nav>
     )

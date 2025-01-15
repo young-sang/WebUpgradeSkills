@@ -5,6 +5,7 @@ import { dataFetch } from '../js/utils.js';
 const PostPage = () => {
     const { id } = useParams();  // useParams를 사용하여 id 값을 가져옵니다.
     const [post, setPost] = useState(null);
+    const [postIndex, setPostIndex] = useState(null);
 
     // 데이터 fetch 및 상태 업데이트
     useEffect(() => {
