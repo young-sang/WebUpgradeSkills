@@ -7,6 +7,10 @@ const JSON_FILE_PATH = path.join(__dirname, "../../data", 'postData.json');
 
 // 라우트 : /data/postData
 
+router.get('/:id', (req, res) => {
+    getJsonData(req, res, JSON_FILE_PATH);
+});
+
 router.get('/', (req, res) => {
     getJsonData(req, res, JSON_FILE_PATH);
 });

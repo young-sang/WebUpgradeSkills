@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Nav from './component/Nav.js';
+import Nav from './Nav.js';
 
 function Header() {
   return (

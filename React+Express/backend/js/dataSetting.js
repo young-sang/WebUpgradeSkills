@@ -7,10 +7,19 @@ const DATA_MODE = ['optionData.json', 'historyData.json', 'postData.json'];
 // 데이터 가져오기
 exports.getJsonData = (req, res, JSONfilePath)  => {
     fs.readFile(JSONfilePath, 'utf8', (err, data) => {
+        const parsedData = JSON.parse(data);
         if(err){
             return sendErrorResponse(res, 500, err);
         } else {
-            sendSuccessResponse(res, 200, JSON.parse(data));
+            const id = req.params.id ? req.params.id : null;
+            if(!id){
+                sendSuccessResponse(res, 200, parsedData);
+                return;
+            }
+            
+            const findData = parsedData.find(item => item.id == id);
+            console.log(findData);
+            sendSuccessResponse(res, 200, findData);
         }
     });
 };
