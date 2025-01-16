@@ -23,7 +23,7 @@ router.put('/', (req, res) => {
     updateData(req, res, JSON_FILE_PATH);
 });
 
-router.delete('/', (req, res) => {
+router.delete('/delete/:id', (req, res) => {
     deleteData(req, res, JSON_FILE_PATH);
 });
 

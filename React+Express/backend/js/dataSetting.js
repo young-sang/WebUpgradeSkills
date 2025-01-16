@@ -18,7 +18,9 @@ exports.getJsonData = (req, res, JSONfilePath)  => {
             }
             
             const findData = parsedData.find(item => item.id == id);
-            console.log(findData);
+
+            // console.log(findData);
+            
             sendSuccessResponse(res, 200, findData);
         }
     });
@@ -54,7 +56,7 @@ exports.updateData = (req, res, JSONfilePath) => {
 
     let itemMode = '';
     let data = '';
-    console.log(req.body);
+    
     switch(dataMode){
         case DATA_MODE[0]: //옵션
             itemMode = req.body.itemMode;
@@ -95,7 +97,7 @@ exports.updateData = (req, res, JSONfilePath) => {
                 parsedData[postIndex] = {...parsedData[postIndex], ...data};
                 break;
         }
-        // console.log(updateData);
+        // console.log(parsedData);
 
         // 데이터 저장
         fs.writeFile(JSONfilePath, JSON.stringify(parsedData, null, 2), 'utf8', (err) => {
@@ -110,7 +112,7 @@ exports.updateData = (req, res, JSONfilePath) => {
 
 // 데이터 삭제
 exports.deleteData = (req, res, JSONfilePath) => {
-    const delIndex = req.query.index;
+    const id = req.params.id;
     const dataMode = path.basename(JSONfilePath);
     const itemMode = req.query.itemMode ? req.query.itemMode : '';
 
@@ -124,13 +126,13 @@ exports.deleteData = (req, res, JSONfilePath) => {
 
         switch(dataMode){
             case DATA_MODE[2]:
-                parsedData = parsedData.filter((post) => post.id != delIndex);
+                parsedData = parsedData.filter((post) => post.id != id);
                 break;
             case DATA_MODE[1]:
-                parsedData = parsedData.filter((_, index) => index != delIndex);
+                parsedData = parsedData.filter((_, index) => index != id);
                 break;
             case DATA_MODE[0]:
-                parsedData[itemMode] = parsedData[itemMode].filter((_, index) => index != delIndex);
+                parsedData[itemMode] = parsedData[itemMode].filter((_, index) => index != id);
                 break;
         }
 

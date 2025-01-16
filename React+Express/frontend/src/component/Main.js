@@ -11,7 +11,7 @@ function Main() {
                 <Route path="/postList" element={<PostListPage />} />
                 <Route path="/post/:id" element={<PostPage />} />
                 <Route path="/post/write" element={<PostForm mode={'create'} />} />
-                <Route path="/post/update/:id" element={<PostForm />} />
+                <Route path="/post/update/:id" element={<PostForm mode={'update'} />} />
                 {/* <Route path="/history" element={<HistoryPage />} /> */}
                 {/* <Route path="/options" element={<OptionPage />} /> */}
             </Routes>

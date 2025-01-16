@@ -4,14 +4,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 const PostForm = ({ mode = null }) => {
     const navigate = useNavigate();
+    
     const [tags, setTags] = useState([]);
     const [categorise, setCategories] = useState([]);
     const { id } = useParams() || {};
     const [formData, setFormData] = useState({
+        id: '',
         title: '',
         description: '',
-        tag: '',
-        category: '',
+        tag: null,
+        category: null,
     });
     
     
@@ -24,11 +26,13 @@ const PostForm = ({ mode = null }) => {
                 
                 if(mode === "update" && id){
                     const postData = await dataFetch(`data/postData/${id}`);
+                    
                     setFormData({
+                        id: postData.id,
                         title: postData.title || '',
                         description: postData.description || '',
-                        tag: postData.tags || '',
-                        category: postData.category || '',
+                        tag: postData.tag || null,
+                        category: postData.category || null,
                     })
                 }
             }
@@ -50,6 +54,7 @@ const PostForm = ({ mode = null }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         const newData = {
             id: mode === 'create' ? Date.now() : formData.id,
             title: formData.title,
@@ -57,6 +62,7 @@ const PostForm = ({ mode = null }) => {
             category: formData.category,
             description: formData.description,
         };
+        
 
         try{
             const url = 'http://localhost:3000/data/postData';
@@ -80,7 +86,8 @@ const PostForm = ({ mode = null }) => {
         <form id="post-form" onSubmit={handleSubmit}>
             <div id="tagDiv">
                 <h2>tag</h2>
-                <select id="tags" name="tags" value={formData.tag} onChange={handleChange}>
+                <select id="tags" name="tag" value={formData.tag} onChange={handleChange}>
+                    <option value={null}>none</option>
                     {tags.map(tag => (
                         <option key={tag} value={tag}>{tag}</option>
                     ))}
@@ -89,6 +96,7 @@ const PostForm = ({ mode = null }) => {
             <div id="categoryDiv">
                 <h2>category</h2>
                 <select id="category" name="category" value={formData.category} onChange={handleChange}>
+                    <option value={null}>none</option>
                     {categorise.map(category => (
                         <option key={category} value={category}>{category}</option>
                     ))}
