@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { dataFetch } from '../../js/utils.js';
+import { dataFetch } from '../../../js/utils.js';
 
 const PostPage = () => {
     const navigate = useNavigate();

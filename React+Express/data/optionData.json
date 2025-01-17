@@ -1,14 +1,32 @@
 {
   "category": [
-    "122",
-    "22"
+    {
+      "id": 1,
+      "category": "2"
+    },
+    {
+      "id": 2,
+      "category": "222221"
+    }
   ],
   "color": [
-    "light",
-    "dark"
+    {
+      "id": 1,
+      "color": "light"
+    },
+    {
+      "id": 2,
+      "color": "dark"
+    }
   ],
-  "tags": [
-    "1",
-    "323"
+  "tag": [
+    {
+      "id": 1,
+      "tag": "1"
+    },
+    {
+      "id": 2,
+      "tag": "323331ㅂㅂ"
+    }
   ]
 }

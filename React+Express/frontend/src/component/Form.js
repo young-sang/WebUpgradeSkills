@@ -21,7 +21,7 @@ const PostForm = ({ mode = null }) => {
         const fetchOption = async () => {
             try {
                 const data = await dataFetch("data/optionData");
-                setTags(data.tags);
+                setTags(data.tag);
                 setCategories(data.category);
                 
                 if(mode === "update" && id){
@@ -89,7 +89,7 @@ const PostForm = ({ mode = null }) => {
                 <select id="tags" name="tag" value={formData.tag} onChange={handleChange}>
                     <option value={null}>none</option>
                     {tags.map(tag => (
-                        <option key={tag} value={tag}>{tag}</option>
+                        <option key={tag.tag} value={tag.tag}>{tag.tag}</option>
                     ))}
                 </select>
             </div>
@@ -98,7 +98,7 @@ const PostForm = ({ mode = null }) => {
                 <select id="category" name="category" value={formData.category} onChange={handleChange}>
                     <option value={null}>none</option>
                     {categorise.map(category => (
-                        <option key={category} value={category}>{category}</option>
+                        <option key={category.category} value={category.category}>{category.category}</option>
                     ))}
                 </select>
             </div>

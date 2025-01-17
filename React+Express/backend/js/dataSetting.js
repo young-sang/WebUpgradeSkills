@@ -57,6 +57,7 @@ exports.updateData = (req, res, JSONfilePath) => {
     let itemMode = '';
     let data = '';
     
+
     switch(dataMode){
         case DATA_MODE[0]: //옵션
             itemMode = req.body.itemMode;
@@ -70,6 +71,7 @@ exports.updateData = (req, res, JSONfilePath) => {
             break;
     }
     
+    // console.log(req.body);
 
     // 기존 데이터 읽기
     fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
@@ -79,22 +81,40 @@ exports.updateData = (req, res, JSONfilePath) => {
 
         // 데이터 가공
         let parsedData = JSON.parse(jsonData);
+        let targetId = null;
         switch(dataMode){
             case DATA_MODE[0]:
-                parsedData[itemMode] = data;
-                break;
-            case DATA_MODE[1]:
-                parsedData = data;
-                break;
-            case DATA_MODE[2]:
-                const postIndex = parsedData.findIndex((post) => post.id == data.id);
 
-                if(postIndex === -1){
+                targetId = parsedData[itemMode].findIndex((post) => post.id == data.id);
+
+                if(targetId === -1){
                     return sendErrorResponse(res, 404, err);
                 }
 
                 // 기존 데이터 수정
-                parsedData[postIndex] = {...parsedData[postIndex], ...data};
+                parsedData[itemMode][targetId] = {...parsedData[itemMode][targetId], ...data};
+                break;
+                break;
+            case DATA_MODE[1]:
+                targetId = parsedData.findIndex((post) => post.id == data.id);
+
+                if(targetId === null){
+                    return sendErrorResponse(res, 404, err);
+                }
+
+                // 기존 데이터 수정
+                parsedData[targetId] = {...parsedData[targetId], ...data};
+
+                break;
+            case DATA_MODE[2]:
+                targetId = parsedData.findIndex((post) => post.id == data.id);
+
+                if(targetId === -1){
+                    return sendErrorResponse(res, 404, err);
+                }
+
+                // 기존 데이터 수정
+                parsedData[targetId] = {...parsedData[targetId], ...data};
                 break;
         }
         // console.log(parsedData);

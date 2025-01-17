@@ -22,20 +22,20 @@ app.use('/data/historyData', historyDataRouter);
 app.use('/data/optionData', optionDataRouter);
 
 // 정적 파일 경로 설정
-app.use(express.static(path.join(__dirname, '../public')));
+// app.use(express.static(path.join(__dirname, '../public')));
 
 
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// });
 
 // React의 build 폴더를 정적 파일로 서빙
-// app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-// // 모든 요청에 대해 React의 index.html 반환
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-// });
+// 모든 요청에 대해 React의 index.html 반환
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
