@@ -4,6 +4,69 @@ import { dataFetch, formatDate } from '../../../js/utils.js';
 
 
 
+const HisyoryCreateForm = ({updateHistoryList}) => {
+    const [formData, setFormData] = useState({
+            id: '',
+            title: '',
+            description: '',
+            date: '',
+        });
+
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const newData = {
+            id: Date.now(),
+            title: formData.title,
+            description: formData.description,
+            date: formatDate(Date.now()),
+        };
+        
+        
+
+        try {
+            const url = 'http://localhost:3000/data/historyData';
+            const method = "POST";
+
+            await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newData),
+            });
+
+            updateHistoryList(newData, 'create');
+            setFormData({
+                id: '',
+                title: '',
+                description: '',
+                date: '',
+            })
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
+
+    return (
+        <form id="history-form" onSubmit={handleSubmit}>
+            <input type="text" id="title" placeholder="Title" name='title' value={formData.title} onChange={handleChange} required />
+            <textarea id="description" placeholder="Description" name='description' value={formData.description} onChange={handleChange} required></textarea>
+            <button type="submit">추가</button>
+        </form>
+    )
+}
+
 const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHistoryList }) => {
     const [formData, setFormData] = useState({
         id: '',
@@ -35,15 +98,15 @@ const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHis
         e.preventDefault();
 
         const newData = {
-            id: mode === 'create' ? Date.now() : formData.id,
+            id: formData.id,
             title: formData.title,
             description: formData.description,
-            date: mode === 'create' ? formatDate(Date.now()) : formData.date,
+            date: formData.date,
         }
 
         try {
             const url = 'http://localhost:3000/data/historyData';
-            const method = mode === "create" ? 'POST' : 'PUT';
+            const method = 'PUT';
 
             await fetch(url, {
                 method,
@@ -53,7 +116,25 @@ const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHis
                 body: JSON.stringify(newData),
             });
 
-            updateHistoryList(newData);
+            updateHistoryList(newData, "update");
+            handleModalOff();
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
+    const handleDelete = () => {
+        try {
+            const url = `http://localhost:3000/data/historyData/delete/${historyData.id}`;
+            const method = 'DELETE';
+            const deleteData = async () => {
+                await fetch(url, {
+                    method,
+                });
+            };
+            deleteData();
+            updateHistoryList(historyData, 'delete');
             handleModalOff();
         }
         catch (err) {
@@ -77,7 +158,7 @@ const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHis
                     <textarea id='historyDescription' name='description' value={formData.description} onChange={handleChange} required></textarea>
                     <button type='submit'>수정</button>
                 </form>
-                <button id='itemDelete'>삭제</button>
+                <button id='itemDelete' onClick={handleDelete}>삭제</button>
             </section>
         </div>
     )
@@ -117,6 +198,15 @@ const HistoryPage = () => {
 
     return (
         <div>
+            <HisyoryCreateForm
+                updateHistoryList={(updatedData, mode) => {
+                    switch(mode){
+                        case "create":
+                            console.log(updatedData);
+                            setHistoryList((prevList) => [...prevList, updatedData]);
+                            break;
+                    }
+                }} />
             <ul id='post-list' className='scrollable-container'>
                 {historyList.slice().reverse().map((item, index) => (
                     <li key={index} className='post-card'>
@@ -132,12 +222,21 @@ const HistoryPage = () => {
                     mode={'update'} 
                     handleModalOff={handleUpdatePageOff} 
                     historyData={updateHistory} 
-                    updateHistoryList={(updatedData) => {
-                        setHistoryList((prevList) => 
-                            prevList.map((item) => 
-                                item.id === updatedData.id ? updatedData : item
-                            )
-                        )
+                    updateHistoryList={(updatedData, mode) => {
+                        switch(mode){
+                            case "update":
+                                setHistoryList((prevList) => 
+                                    prevList.map((item) => 
+                                        item.id === updatedData.id ? updatedData : item
+                                    )
+                                )
+                                break;
+                            case 'delete':
+                                console.log(updatedData);
+                                setHistoryList((prevList) => 
+                                    prevList.filter((item) => item.id != updatedData.id))
+                                break;
+                        }
                     }} />
             )}
         </div>

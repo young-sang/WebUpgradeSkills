@@ -28,7 +28,24 @@ exports.getJsonData = (req, res, JSONfilePath)  => {
 
 // 데이터 추가
 exports.addJsonData = (req, res, JSONfilePath) => {
-    const newdata = req.body; 
+    const dataMode = path.basename(JSONfilePath);
+    const getData = req.body;
+    let newdata = null;
+    let itemMode = null;
+
+    switch(dataMode){
+        case DATA_MODE[0]: // 옵션
+            newdata = getData.data;
+            itemMode = getData.itemMode;
+            break;
+        case DATA_MODE[1]: // 히스토리
+            newdata = getData;
+            break;
+        case DATA_MODE[2]: // 포스트
+            newdata = getData;
+            break;
+
+    }
 
     //기존 JSON 데이터 읽기
     fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
@@ -38,7 +55,19 @@ exports.addJsonData = (req, res, JSONfilePath) => {
 
         // 기존 데이터 파싱 후 새로운 데이터 추가
         const parsedData = JSON.parse(jsonData);
-        parsedData.push(newdata);
+        
+        switch(dataMode){
+            case DATA_MODE[0]: // 옵션
+                parsedData[itemMode].push(newdata);
+                break;
+            case DATA_MODE[1]: // 히스토리
+                parsedData.push(newdata);
+                break;
+            case DATA_MODE[2]: // 포스트
+                parsedData.push(newdata);
+                break;
+        }
+        
 
         // 수정된 데이터 다시 저장
         fs.writeFile(JSONfilePath, JSON.stringify(parsedData, null, 2), 'utf8', (err) => {
@@ -134,8 +163,7 @@ exports.updateData = (req, res, JSONfilePath) => {
 exports.deleteData = (req, res, JSONfilePath) => {
     const id = req.params.id;
     const dataMode = path.basename(JSONfilePath);
-    const itemMode = req.query.itemMode ? req.query.itemMode : '';
-
+    const itemMode = req.params.itemMode ? req.params.itemMode : '';
 
     fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
         if (err) {
@@ -143,16 +171,16 @@ exports.deleteData = (req, res, JSONfilePath) => {
         }
 
         let parsedData = JSON.parse(jsonData);
-
+        
         switch(dataMode){
             case DATA_MODE[2]:
                 parsedData = parsedData.filter((post) => post.id != id);
                 break;
             case DATA_MODE[1]:
-                parsedData = parsedData.filter((_, index) => index != id);
+                parsedData = parsedData.filter((item) => item.id != id);
                 break;
             case DATA_MODE[0]:
-                parsedData[itemMode] = parsedData[itemMode].filter((_, index) => index != id);
+                parsedData[itemMode] = parsedData[itemMode].filter((item) => item.id != id);
                 break;
         }
 
