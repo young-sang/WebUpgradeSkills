@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { dataFetch, formatDate } from '../../../js/utils.js';
-
+import { formatDate } from '../../../js/utils.js';
+import { handleChange, handleSubmit } from '../../../js/formUtils.js';
+import { dataFetch, handleDelete } from '../../../js/dataUtils.js';
 
 
 const HisyoryCreateForm = ({updateHistoryList}) => {
@@ -12,56 +13,26 @@ const HisyoryCreateForm = ({updateHistoryList}) => {
             date: '',
         });
 
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const newData = {
-            id: Date.now(),
-            title: formData.title,
-            description: formData.description,
-            date: formatDate(Date.now()),
-        };
-        
-        
-
-        try {
-            const url = 'http://localhost:3000/data/historyData';
-            const method = "POST";
-
-            await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newData),
-            });
-
-            updateHistoryList(newData, 'create');
-            setFormData({
-                id: '',
-                title: '',
-                description: '',
-                date: '',
-            })
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
-
     return (
-        <form id="history-form" onSubmit={handleSubmit}>
-            <input type="text" id="title" placeholder="Title" name='title' value={formData.title} onChange={handleChange} required />
-            <textarea id="description" placeholder="Description" name='description' value={formData.description} onChange={handleChange} required></textarea>
+        <form id="history-form" onSubmit={handleSubmit(
+            {
+                id: Date.now(),
+                title: formData.title,
+                description: formData.description,
+                date: formatDate(Date.now()),
+            },
+            'historyData', 'create', (newData) => {
+                updateHistoryList(newData, 'create');
+                setFormData({
+                    id: '',
+                    title: '',
+                    description: '',
+                    date: '',
+                });
+            }
+        )}>
+            <input type="text" id="title" placeholder="Title" name='title' value={formData.title} onChange={handleChange(setFormData)} required />
+            <textarea id="description" placeholder="Description" name='description' value={formData.description} onChange={handleChange(setFormData)} required></textarea>
             <button type="submit">추가</button>
         </form>
     )
@@ -86,62 +57,6 @@ const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHis
         }
     }, [mode, historyData]);
 
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const newData = {
-            id: formData.id,
-            title: formData.title,
-            description: formData.description,
-            date: formData.date,
-        }
-
-        try {
-            const url = 'http://localhost:3000/data/historyData';
-            const method = 'PUT';
-
-            await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newData),
-            });
-
-            updateHistoryList(newData, "update");
-            handleModalOff();
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
-    const handleDelete = () => {
-        try {
-            const url = `http://localhost:3000/data/historyData/delete/${historyData.id}`;
-            const method = 'DELETE';
-            const deleteData = async () => {
-                await fetch(url, {
-                    method,
-                });
-            };
-            deleteData();
-            updateHistoryList(historyData, 'delete');
-            handleModalOff();
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
     return (
         <div id='blurBackground'>
             <section id='historySet'>
@@ -153,12 +68,26 @@ const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHis
                         <i class="bx bx-x" onClick={handleModalOff}></i>
                     </div>
                 </div>
-                <form id='historyUpdateForm' onSubmit={handleSubmit}>
-                    <input type='text' id='historyHead' name='title' value={formData.title} onChange={handleChange} required />
-                    <textarea id='historyDescription' name='description' value={formData.description} onChange={handleChange} required></textarea>
+                <form id='historyUpdateForm' onSubmit={handleSubmit(
+                    {
+                        id: formData.id,
+                        title: formData.title,
+                        description: formData.description,
+                        date: formData.date,
+                    },
+                    'historyData', 'update', (newData) => {
+                        updateHistoryList(newData, "update");
+                        handleModalOff();
+                    }
+                )}>
+                    <input type='text' id='historyHead' name='title' value={formData.title} onChange={handleChange(setFormData)} required />
+                    <textarea id='historyDescription' name='description' value={formData.description} onChange={handleChange(setFormData)} required></textarea>
                     <button type='submit'>수정</button>
                 </form>
-                <button id='itemDelete' onClick={handleDelete}>삭제</button>
+                <button id='itemDelete' onClick={() => {handleDelete(`historyData/delete/${historyData.id}`, () => {
+                    updateHistoryList(historyData, 'delete');
+                    handleModalOff();
+                })}}>삭제</button>
             </section>
         </div>
     )

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { dataFetch } from '../../../js/utils';
-
+import { dataFetch, handleDelete } from '../../../js/dataUtils.js';
+import { handleChange, handleSubmit } from '../../../js/formUtils.js';
 
 const OptionColorSet = ({ colorSet }) => {
     const [colorIndex, setColorIndex] = useState(() => {
@@ -43,64 +43,6 @@ const OptionUpdatePage = ({ itemMode = null, mode = null, handleModalOff, data =
         }
     }, [mode, data]);
 
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const newData = {
-            id: mode === 'create' ? Date.now() : formData.id,
-            [itemMode]: formData[itemMode],
-        };
-        
-        
-
-        try {
-            const url = 'http://localhost:3000/data/optionData';
-            const method = mode === "create" ? 'POST' : 'PUT';
-
-            await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    itemMode,
-                    data: newData}),
-            });
-
-            updateOption(newData, itemMode, mode);
-            handleModalOff();
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
-    const handleDelete = () => {
-        try {
-            const url = `http://localhost:3000/data/optionData/delete/${itemMode}/${data.id}`;
-            const method = 'DELETE';
-            const deleteData = async () => {
-                await fetch(url, {
-                    method,
-                });
-            };
-            deleteData();
-            updateOption(data, itemMode, 'delete');
-            handleModalOff();
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
     return (
         <div id='blurBackground'>
             <section id='historySet'>
@@ -113,11 +55,26 @@ const OptionUpdatePage = ({ itemMode = null, mode = null, handleModalOff, data =
                         <i class="bx bx-x" onClick={() => handleModalOff(false)}></i>
                     </div>
                 </div>
-                <form id='optionItemForm' onSubmit={handleSubmit}>
-                    <input type='text' id='historyHead' name={itemMode} value={formData[itemMode]} onChange={handleChange} required />
+                <form id='optionItemForm' onSubmit={handleSubmit(
+                    {
+                        itemMode,
+                        data: {
+                            id: mode === 'create' ? Date.now() : formData.id,
+                            [itemMode]: formData[itemMode],
+                        },
+                    }, 
+                    'optionData', mode, (newData) => {
+                        updateOption(newData.data, itemMode, mode);
+                        handleModalOff();
+                    }
+                )}>
+                    <input type='text' id='historyHead' name={itemMode} value={formData[itemMode]} onChange={handleChange(setFormData)} required />
                     <button type='submit'>{mode === 'create' ? "추가" : "수정"}</button>
                 </form>
-                {data && <button id='itemDelete' onClick={handleDelete}>삭제</button>}
+                {data && <button id='itemDelete' onClick={() => {handleDelete(`optionData/delete/${itemMode}/${data.id}`, () => {
+                    updateOption(data, itemMode, 'delete');
+                    handleModalOff();
+                })}}>삭제</button>}
             </section>
         </div>
     )
@@ -203,46 +160,31 @@ const OptionPage = () => {
                     handleModalOff={setIsModalOn}
                     data={selectData}
                     updateOption={(updatedData, itemMode, mode) => {
-                        switch(mode){
-                            case "create":
-                                switch(itemMode){
-                                    case "tag":
-                                        setTag((prevList) => [...prevList, updatedData]);
-                                        break;
-                                    case "category":
-                                        setCategories((prevList) => [...prevList, updatedData]);
-                                        break;
-                                }
+                        const updateState = (stateUpdater, operation) => {
+                            stateUpdater((prevList) => {
+                                switch(operation){
+                                    case "create":
+                                        return [...prevList, updatedData];
+                                    case "update":
+                                        return prevList.map((item) => 
+                                            item.id === updatedData.id ? updatedData : item
+                                        );
+                                    case "delete":
+                                        return prevList.filter((item) => item.id != updatedData.id);
+                                };
+                            });
+                        };
+                        
+                        switch(itemMode){
+                            case "tag":
+                                updateState(setTag, mode);
                                 break;
-                            case "update":
-                                switch(itemMode){
-                                    case "tag":
-                                        setTag((prevList) => 
-                                            prevList.map((item) => 
-                                                item.id === updatedData.id ? updatedData : item
-                                            ))
-                                        break;
-                                    case "category":
-                                        setCategories((prevList) => 
-                                            prevList.map((item) => 
-                                                item.id === updatedData.id ? updatedData : item
-                                            ))
-                                        break;
-                                }
+                            case 'category':
+                                updateState(setCategories, mode);
                                 break;
-                            case "delete":
-                                switch(itemMode){
-                                    case "tag":
-                                        setTag((prevList) => 
-                                            prevList.filter((item) => item.id != updatedData.id))
-                                        break;
-                                    case "category":
-                                        setCategories((prevList) => 
-                                            prevList.filter((item) => item.id != updatedData.id))
-                                        break;
-                                }
-                                break;
-                        }                        
+                            default:
+                                console.error(`Unknown itemMode: ${itemMode}`);
+                        }
                     }}/>
             )}
             

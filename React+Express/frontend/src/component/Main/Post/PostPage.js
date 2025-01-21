@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { dataFetch } from '../../../js/utils.js';
+import { dataFetch, handleDelete } from '../../../js/dataUtils.js';
 
 const PostPage = () => {
     const navigate = useNavigate();
@@ -21,44 +21,23 @@ const PostPage = () => {
         fetchPostData();  // 컴포넌트가 마운트될 때 데이터 가져오기
     }, [id]);  // id가 변경될 때마다 다시 실행되도록 설정
 
-    const handleToggleOption = () => {
-        setIsVisible((prev) => !prev);
-    };
-
-    const handleDelete = () => {
-        try {
-            const url = `http://localhost:3000/data/postData/delete/${id}`;
-            const method = 'DELETE';
-            const deleteData = async () => {
-                await fetch(url, {
-                    method,
-                });
-            };
-            deleteData();
-            navigate('/');
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
     if (!post) {
         return <div>Loading...</div>;  // 데이터가 로딩 중일 때 표시
     }
 
-
-
     // post가 있으면 상세 데이터 출력
     return (
         <div>
-            <i id="optionBtn" class="bx bx-menu" onClick={handleToggleOption}>
+            <i id="optionBtn" class="bx bx-menu" onClick={() => setIsVisible((prev) => !prev)}>
                 {isVisible && ( // isVisible이 true일 때만 표시
                     <div className="optionMenuDiv">
                         <ul className="optionMenuUL">
                             <li className="postDetailMenu postUpdate">
                                 <Link to={`/post/update/${id}`}>Update</Link>
                             </li>
-                            <li className="postDetailMenu postDelete" onClick={handleDelete}>Delete</li>
+                            <li className="postDetailMenu postDelete" onClick={() => {
+                                handleDelete(`postData/delete/${id}`, () => navigate('/'))
+                                }}>Delete</li>
                         </ul>
                     </div>
                 )}

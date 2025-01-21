@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link  } from "react-router-dom";
-import { dataFetch } from '../../../js/utils.js';
+import { dataFetch } from '../../../js/dataUtils.js';
+import { handleChange } from '../../../js/formUtils.js';
 
 
 const SearchForm = ({postList, setFilteredPostList}) => {
@@ -20,18 +21,9 @@ const SearchForm = ({postList, setFilteredPostList}) => {
         }
     }, [searchForm, postList, setFilteredPostList]);
 
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setSearchForm((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-
     return (
         <form id="search-form">
-            <input type="text" name='search' onChange={handleChange} value={searchForm.search} placeholder="Search posts..." />
+            <input type="text" name='search' onChange={handleChange(setSearchForm)} value={searchForm.search} placeholder="Search posts..." />
         </form>
     )
 }

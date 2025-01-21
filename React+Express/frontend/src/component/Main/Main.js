@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PostListPage from './Post/PostListPage.js';
 import PostPage from './Post/PostPage.js';
-import PostForm from '../Form.js';
+import { PostForm } from '../Form.js';
 import HistoryPage from './History/HistoryPage.js';
 import OptionPage from './Option/OptionPage.js';
 

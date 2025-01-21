@@ -1,8 +1,3 @@
-export const dataFetch = async (path) => {
-    const data = await (await fetch('http://localhost:3000/' + path)).json();
-    return data.data;
-}
-
 export const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     const year = date.getFullYear();
@@ -10,3 +5,4 @@ export const formatDate = (timestamp) => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 };
+

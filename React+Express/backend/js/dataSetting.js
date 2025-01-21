@@ -164,7 +164,8 @@ exports.deleteData = (req, res, JSONfilePath) => {
     const id = req.params.id;
     const dataMode = path.basename(JSONfilePath);
     const itemMode = req.params.itemMode ? req.params.itemMode : '';
-
+    console.log(id);
+    console.log(itemMode);
     fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
         if (err) {
             return sendErrorResponse(res, 500, err);
