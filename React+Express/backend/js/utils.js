@@ -13,3 +13,12 @@ exports.sendSuccessResponse = (res, statusCode, data = null) => {
         data: data || null
     });
 };
+
+// 성공 여부 보내기
+
+exports.sendResultResponse = (res, statusCode, result, data = null) => {
+    res.status(statusCode).json({
+        success: result,
+        data: data,
+    });
+};

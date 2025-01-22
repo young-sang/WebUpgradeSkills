@@ -11,16 +11,22 @@ export const handleSubmit = ( newData, path, mode, afterSubmit = () => {} ) => a
 
     try{
         const url = `http://localhost:3000/data/${path}`;
-        const method = mode === "create" ? 'POST' : 'PUT';
+        const method = mode === "create" || "read" ? 'POST' : 'PUT';
 
-        await fetch(url, {
+        const res = await fetch(url, {
             method,
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(newData),
         });
-        afterSubmit(newData);
+
+        if(mode === 'read'){
+            const resData = await res.json();
+            afterSubmit(newData, resData);
+        }else{
+            afterSubmit(newData);
+        }
     }
     catch (err) {
         console.error(err);

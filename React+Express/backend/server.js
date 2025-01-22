@@ -14,13 +14,14 @@ app.use(express.json());
 const postDataRouter = require('./routes/postData.js');
 const historyDataRouter = require('./routes/historyData.js');
 const optionDataRouter = require('./routes/optionData.js');
+const userDataRouter = require('./routes/userData.js');
 
 
 // 미들웨어로 라우트 등록
 app.use('/data/postData', postDataRouter);
 app.use('/data/historyData', historyDataRouter);
 app.use('/data/optionData', optionDataRouter);
-
+app.use('/data/userData/', userDataRouter);
 // 정적 파일 경로 설정
 // app.use(express.static(path.join(__dirname, '../public')));
 

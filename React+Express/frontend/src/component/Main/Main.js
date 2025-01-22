@@ -4,12 +4,14 @@ import PostPage from './Post/PostPage.js';
 import { PostForm } from '../Form.js';
 import HistoryPage from './History/HistoryPage.js';
 import OptionPage from './Option/OptionPage.js';
+import LoginPage from "./LoginPage.js";
 
 function Main() {
     return (
         <main id="app-Main">
             <Routes>
                 <Route path="/" element={<PostListPage />} />
+                <Route path="/login" element={<LoginPage />} />
                 <Route path="/postList" element={<PostListPage />} />
                 <Route path="/post/:id" element={<PostPage />} />
                 <Route path="/post/write" element={<PostForm mode={'create'} />} />

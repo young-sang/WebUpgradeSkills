@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const { sendErrorResponse, sendSuccessResponse } = require('./utils');
+const { sendErrorResponse, sendSuccessResponse, sendResultResponse } = require('./utils');
 
-const DATA_MODE = ['optionData.json', 'historyData.json', 'postData.json'];
+const DATA_MODE = ['optionData.json', 'historyData.json', 'postData.json', 'userData.json'];
 
 // 데이터 가져오기
 exports.getJsonData = (req, res, JSONfilePath)  => {
@@ -195,4 +195,33 @@ exports.deleteData = (req, res, JSONfilePath) => {
         });
     });
     return;
+}
+
+exports.compareData = (req, res, JSONfilePath) => {
+    const getData = req.body;
+    
+    fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
+        
+        if (err) {
+            return sendErrorResponse(res, 500, err);
+        }
+
+        try {
+            let parsedData = JSON.parse(jsonData);
+
+            const existingData = parsedData.find(item => item.userId === getData.userId);
+            
+
+            if(existingData){
+                return sendResultResponse(res, 200, true, {userid: existingData.userId});
+            }
+            else{
+                return sendResultResponse(res, 200, false, {message: "userID Not Found"});
+            }
+        }
+        catch(err) {
+            return sendErrorResponse(res, 500, err);
+        }
+        
+    })
 }
