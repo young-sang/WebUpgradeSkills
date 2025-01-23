@@ -12,6 +12,11 @@ const JSON_FILE_PATH = path.join(__dirname, "../../data", 'userData.json');
 // });
 
 router.post('/', (req, res) => {
+    addJsonData(req, res, JSON_FILE_PATH);
+});
+
+router.post('/compare', (req, res) => {
+    console.log('ta');
     compareData(req, res, JSON_FILE_PATH);
 });
 

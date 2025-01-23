@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate  } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
-import { handleChange, handleSubmit } from "../../js/formUtils";
+import { handleChange, handleCompare } from "../../../js/formUtils";
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -12,30 +12,16 @@ const LoginPage = () => {
         password: '',
     });
 
-    useEffect(() => {
-        return () => {
-            SetMessage(null);
-            setIsMessageOn(false);
-            setFormData({
-                userId: '',
-                password: '',
-            });
-        };
-    }, []);
-
-    useEffect(() => {
-        console.log(formData);
-    }, [message, formData]);
+    useEffect(() => {}, [message, formData]);
 
     return (
         <div>
             <h2>Login</h2>
-            <form onSubmit={handleSubmit({
+            <form onSubmit={handleCompare("login" ,{
                     userId: formData.userId,
                     password: formData.password,
-                }, "userData", "read", (resData) => {
+                }, "userData/compare", (resData) => {
                     if (resData.success){
-                        console.log(resData.data);
                         // 로그인 set 저장
                         navigate('/');
                     }else{
@@ -52,6 +38,7 @@ const LoginPage = () => {
                 <input id="password" type="password" value={formData.password} name="password" onChange={handleChange(setFormData)} required/>
                 <button type="submit">로그인</button>
             </form>
+            <Link to={'/signUp'}>회원가입</Link>
             {isMessageOn && (
                 <p>{message}</p>
             )}

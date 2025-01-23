@@ -8,12 +8,12 @@ export const handleChange = (setter) => (e) => {
 
 export const handleSubmit = ( newData, path, mode, afterSubmit = () => {} ) => async (e) => {
     e.preventDefault();    
-
+    
     try{
         const url = `http://localhost:3000/data/${path}`;
-        const method = mode === "create" || "read" ? 'POST' : 'PUT';
+        const method = mode === "create" ? 'POST' : 'PUT';
 
-        const res = await fetch(url, {
+        await fetch(url, {
             method,
             headers: {
                 'Content-Type': 'application/json',
@@ -21,12 +21,33 @@ export const handleSubmit = ( newData, path, mode, afterSubmit = () => {} ) => a
             body: JSON.stringify(newData),
         });
 
-        if(mode === 'read'){
-            const resData = await res.json();
-            afterSubmit(resData);
-        }else{
-            afterSubmit(newData);
-        }
+        afterSubmit(newData);
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+
+export const handleCompare = ( type, compareData, path, afterCompare = () => {} ) => async (e) => {
+    e.preventDefault();    
+
+    try{
+        const url = `http://localhost:3000/data/${path}`;
+        const method = "POST"
+
+        const res = await fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                compareData,
+                searchType: type,
+            }),
+        });
+
+        const resData = await res.json();
+        afterCompare(resData);
     }
     catch (err) {
         console.error(err);

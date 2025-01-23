@@ -4,7 +4,8 @@ import PostPage from './Post/PostPage.js';
 import { PostForm } from '../Form.js';
 import HistoryPage from './History/HistoryPage.js';
 import OptionPage from './Option/OptionPage.js';
-import LoginPage from "./LoginPage.js";
+import LoginPage from "./User/LoginPage.js";
+import SignUpPage from "./User/SignUpPage.js";
 
 function Main() {
     return (
@@ -12,6 +13,7 @@ function Main() {
             <Routes>
                 <Route path="/" element={<PostListPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/signUp" element={<SignUpPage />} />
                 <Route path="/postList" element={<PostListPage />} />
                 <Route path="/post/:id" element={<PostPage />} />
                 <Route path="/post/write" element={<PostForm mode={'create'} />} />

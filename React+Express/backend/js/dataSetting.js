@@ -28,6 +28,7 @@ exports.getJsonData = (req, res, JSONfilePath)  => {
 
 // 데이터 추가
 exports.addJsonData = (req, res, JSONfilePath) => {
+    console.log(1);
     const dataMode = path.basename(JSONfilePath);
     const getData = req.body;
     let newdata = null;
@@ -44,7 +45,9 @@ exports.addJsonData = (req, res, JSONfilePath) => {
         case DATA_MODE[2]: // 포스트
             newdata = getData;
             break;
-
+        case DATA_MODE[3]: // 유저
+            newdata = getData;
+            break;
     }
 
     //기존 JSON 데이터 읽기
@@ -64,6 +67,9 @@ exports.addJsonData = (req, res, JSONfilePath) => {
                 parsedData.push(newdata);
                 break;
             case DATA_MODE[2]: // 포스트
+                parsedData.push(newdata);
+                break;
+            case DATA_MODE[3]: // 유저
                 parsedData.push(newdata);
                 break;
         }
@@ -211,17 +217,36 @@ exports.compareData = (req, res, JSONfilePath) => {
         try {
             let parsedData = JSON.parse(jsonData);
 
-            const existingData = parsedData.find(item => item.userId === getData.userId);
-            
+            let existingData = null;
 
-            if(existingData){
-                if(existingData.password === getData.password){
-                    return sendResultResponse(res, 200, true, {userid: existingData.userId});
-                }
-                return sendResultResponse(res, 200, false, {message: "Wrong Password"});
+            // 검색 조건 분기 처리
+            switch(getData.searchType){
+                case "userName":
+                    existingData = parsedData.find(item => item.userName === getData.compareData);
+                    console.log(getData);
+                    break;
+                case "userId":
+                    existingData = parsedData.find(item => item.userId === getData.compareData);
+                    break;
+                case "login":
+                    existingData = parsedData.find(item => item.userId === getData.compareData.userId);
+
+                    if(existingData){
+                        if(existingData.password === getData.compareData.password){
+                            return sendResultResponse(res, 200, true, {userid: existingData.userId});
+                        }
+                        return sendResultResponse(res, 200, false, {message: "Wrong Password"});
+                    }
+                    else{
+                        return sendResultResponse(res, 200, false, {message: "userID Not Found"});
+                    }
             }
-            else{
-                return sendResultResponse(res, 200, false, {message: "userID Not Found"});
+
+            // 결과 처리
+            if (existingData) {
+                return sendResultResponse(res, 200, true, {message: '중복된 것이 있습니다.'}); // 검색 성공 시 결과 반환
+            } else {
+                return sendResultResponse(res, 200, false, { message: "사용 가능합니다." }); // 검색 실패 시 메시지 반환
             }
         }
         catch(err) {
