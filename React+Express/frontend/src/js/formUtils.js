@@ -23,7 +23,7 @@ export const handleSubmit = ( newData, path, mode, afterSubmit = () => {} ) => a
 
         if(mode === 'read'){
             const resData = await res.json();
-            afterSubmit(newData, resData);
+            afterSubmit(resData);
         }else{
             afterSubmit(newData);
         }

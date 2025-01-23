@@ -1,12 +1,31 @@
-import { BrowserRouter as Router, Routes, Route, Link  } from "react-router-dom";
-import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate  } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
 import { handleChange, handleSubmit } from "../../js/formUtils";
 
 const LoginPage = () => {
+    const navigate = useNavigate();
+
+    const [isMessageOn, setIsMessageOn] = useState(false);
+    const [message, SetMessage] = useState(null);
     const [formData, setFormData] = useState({
         userId: '',
         password: '',
-    })
+    });
+
+    useEffect(() => {
+        return () => {
+            SetMessage(null);
+            setIsMessageOn(false);
+            setFormData({
+                userId: '',
+                password: '',
+            });
+        };
+    }, []);
+
+    useEffect(() => {
+        console.log(formData);
+    }, [message, formData]);
 
     return (
         <div>
@@ -14,18 +33,28 @@ const LoginPage = () => {
             <form onSubmit={handleSubmit({
                     userId: formData.userId,
                     password: formData.password,
-                }, "userData", "read", (newData, resData) => {
-                    if (resData.success === true){
+                }, "userData", "read", (resData) => {
+                    if (resData.success){
                         console.log(resData.data);
+                        // 로그인 set 저장
+                        navigate('/');
                     }else{
-                        alert(resData.data.message);
+                        SetMessage(resData.data.message);
+                        setIsMessageOn(true);
+                        setFormData({
+                            userId: '',
+                            password: '',
+                        });
                     }
                 }
             )}>
-                <input id="userId" name="userId" onChange={handleChange(setFormData)} required/>
-                <input id="password" type="password" name="password" onChange={handleChange(setFormData)} required/>
+                <input id="userId" value={formData.userId} name="userId" onChange={handleChange(setFormData)} required/>
+                <input id="password" type="password" value={formData.password} name="password" onChange={handleChange(setFormData)} required/>
                 <button type="submit">로그인</button>
             </form>
+            {isMessageOn && (
+                <p>{message}</p>
+            )}
         </div>
     )
 }

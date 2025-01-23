@@ -197,6 +197,8 @@ exports.deleteData = (req, res, JSONfilePath) => {
     return;
 }
 
+
+// 아이디 조회
 exports.compareData = (req, res, JSONfilePath) => {
     const getData = req.body;
     
@@ -213,7 +215,10 @@ exports.compareData = (req, res, JSONfilePath) => {
             
 
             if(existingData){
-                return sendResultResponse(res, 200, true, {userid: existingData.userId});
+                if(existingData.password === getData.password){
+                    return sendResultResponse(res, 200, true, {userid: existingData.userId});
+                }
+                return sendResultResponse(res, 200, false, {message: "Wrong Password"});
             }
             else{
                 return sendResultResponse(res, 200, false, {message: "userID Not Found"});
