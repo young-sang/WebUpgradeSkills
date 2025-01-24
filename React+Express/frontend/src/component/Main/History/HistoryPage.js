@@ -109,6 +109,7 @@ const HistoryPage = () => {
 
     useEffect(() => {
         console.log("historyUpdated");
+        console.log(historyList);
     }, [historyList]);
 
 
@@ -132,12 +133,12 @@ const HistoryPage = () => {
                     switch(mode){
                         case "create":
                             console.log(updatedData);
-                            setHistoryList((prevList) => [...prevList, updatedData]);
+                            setHistoryList((prevList) => [updatedData, ...prevList]);
                             break;
                     }
                 }} />
             <ul id='post-list' className='scrollable-container'>
-                {historyList.slice().reverse().map((item, index) => (
+                {historyList.slice().map((item, index) => (
                     <li key={index} className='post-card'>
                         <h2>{item.title}</h2>
                         <p>{item.description}</p>

@@ -28,7 +28,6 @@ exports.getJsonData = (req, res, JSONfilePath)  => {
 
 // 데이터 추가
 exports.addJsonData = (req, res, JSONfilePath) => {
-    console.log(1);
     const dataMode = path.basename(JSONfilePath);
     const getData = req.body;
     let newdata = null;
@@ -64,10 +63,10 @@ exports.addJsonData = (req, res, JSONfilePath) => {
                 parsedData[itemMode].push(newdata);
                 break;
             case DATA_MODE[1]: // 히스토리
-                parsedData.push(newdata);
+                parsedData.unshift(newdata);
                 break;
             case DATA_MODE[2]: // 포스트
-                parsedData.push(newdata);
+                parsedData.unshift(newdata);
                 break;
             case DATA_MODE[3]: // 유저
                 parsedData.push(newdata);

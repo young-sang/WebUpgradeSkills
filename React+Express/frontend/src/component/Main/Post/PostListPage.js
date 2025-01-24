@@ -28,9 +28,21 @@ const SearchForm = ({postList, setFilteredPostList}) => {
     )
 }
 
+// 포스트 리스트 페이지
 const PostListPage = () => {
     const [postList, setPostList] = useState(null);
-    const [filteredPostList, setFilteredPostList] = useState(null);
+    const [filteredPostList, setFilteredPostList] = useState([]);
+
+    // 포스트 리스트 페이지
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemPerPage = 10;
+
+    const totalPages = Math.ceil(filteredPostList.length / itemPerPage);
+    const startIndex = (currentPage - 1) * itemPerPage;
+    const endIndex = startIndex + itemPerPage;
+
+    // n페이지 포스트
+    const currentPosts = filteredPostList.slice().slice(startIndex, endIndex);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,7 +53,7 @@ const PostListPage = () => {
         fetchData();
     }, []);
 
-    useEffect(() => {}, [filteredPostList]);
+    useEffect(() => {}, [filteredPostList, currentPage]);
 
     if(!postList || postList.length === 0){
         return <p>No Post Found.</p>        
@@ -51,8 +63,8 @@ const PostListPage = () => {
         <div>
             <SearchForm postList={postList} setFilteredPostList={setFilteredPostList}/>
             <ul id="post-list" className="scrollable-container">
-                {filteredPostList.slice().reverse().map((post,index) => (
-                    <li key={index} className='post-card'>
+                {currentPosts.slice().map((post,index) => (
+                    <li key={index} data-index={index} className='post-card'>
                         <Link to={`/post/${post.id}`} >
                             <h2>{post.title}</h2>
                             <p>{post.id}</p>
@@ -60,6 +72,27 @@ const PostListPage = () => {
                     </li>
                 ))}
             </ul>
+            <div className='pagination'>
+                {/* 이전 페이지 버튼 */}
+                <button onClick={() => {
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))}}
+                    disabled={currentPage === 1}
+                >이전</button>
+
+                {/* 페이지 번호 */}
+                {Array.from({length: totalPages}, (_, i) => (
+                    <button 
+                    key={i + 1}
+                    className={currentPage === i + 1 ? 'active' : ''}
+                    onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                ))}
+
+                {/* 다음 페이지 버튼 */}
+                <button onClick={() => {
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))}}
+                    disabled={currentPage === totalPages}
+                >다음</button>
+            </div>
         </div>
     );
 };
