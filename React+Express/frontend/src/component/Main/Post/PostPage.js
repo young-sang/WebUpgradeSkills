@@ -4,18 +4,27 @@ import { dataFetch, handleDelete } from '../../../js/dataUtils.js';
 
 const PostPage = () => {
     const navigate = useNavigate();
-
-    const { id } = useParams();  // useParams를 사용하여 id 값을 가져옵니다.
+    const { id } = useParams();
     const [post, setPost] = useState(null);
-    // const [postIndex, setPostIndex] = useState(null); // 나중에 앞 뒤 포스트 이동을 위한 변수
+    const [postList, setPostList] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(null);
     const [isVisible, setIsVisible] = useState(false);
 
     // 데이터 fetch 및 상태 업데이트
     useEffect(() => {
         const fetchPostData = async () => {
-            // 여기서는 'id'를 사용하여 해당 포스트 데이터를 가져옵니다.
-            const data = await dataFetch(`data/postData/${id}`);
-            setPost(data);  // 상태 업데이트
+
+            // 전체 포스트 리스트 가져오기
+            const data = await dataFetch('data/postData');
+            setPostList(data);
+
+            // 현제 포스트 데이터 가져오기
+            const currentPost = data.find((item) => item.id === parseInt(id));
+            setPost(currentPost);
+
+            // 현재 포스트 인덱스 설정
+            const index = data.findIndex((item) => item.id === parseInt(id));
+            setCurrentIndex(index);
         };
 
         fetchPostData();  // 컴포넌트가 마운트될 때 데이터 가져오기
@@ -24,6 +33,9 @@ const PostPage = () => {
     if (!post) {
         return <div>Loading...</div>;  // 데이터가 로딩 중일 때 표시
     }
+
+    const prevPostId = currentIndex > 0 ? postList[currentIndex - 1].id : null;
+    const nextPostId = currentIndex < postList.length - 1 ? postList[currentIndex + 1].id : null;
 
     // post가 있으면 상세 데이터 출력
     return (
@@ -45,6 +57,23 @@ const PostPage = () => {
             <div id="postDetail">
                 <h2>{post.title}</h2>
                 <p>{post.description}</p>
+            </div>
+
+            {/* 네비게이션 */}
+            <div className='navigation'>
+                {/* 이전 포스트 이동 */}
+                {prevPostId && (
+                    <button onClick={() => navigate(`/post/${prevPostId}`)}>
+                        이전 포스트
+                    </button>
+                )}
+
+                {/* 다음 포스트 이동 */}
+                {nextPostId && (
+                    <button onClick={() => navigate(`/post/${nextPostId}`)}>
+                        다음 포스트
+                    </button>
+                )}
             </div>
         </div>
     );
