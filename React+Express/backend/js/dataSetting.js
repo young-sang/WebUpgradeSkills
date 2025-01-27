@@ -31,15 +31,16 @@ exports.addJsonData = (req, res, JSONfilePath) => {
     const dataMode = path.basename(JSONfilePath);
     const getData = req.body;
     let newdata = null;
-    let itemMode = null;
+    let mode = null;
 
     switch(dataMode){
         case DATA_MODE[0]: // 옵션
             newdata = getData.data;
-            itemMode = getData.itemMode;
+            mode = getData.itemMode;
             break;
         case DATA_MODE[1]: // 히스토리
-            newdata = getData;
+            newdata = getData.data;
+            mode = getData.date;
             break;
         case DATA_MODE[2]: // 포스트
             newdata = getData;
@@ -60,10 +61,14 @@ exports.addJsonData = (req, res, JSONfilePath) => {
         
         switch(dataMode){
             case DATA_MODE[0]: // 옵션
-                parsedData[itemMode].push(newdata);
+                parsedData[mode].push(newdata);
                 break;
             case DATA_MODE[1]: // 히스토리
-                parsedData.unshift(newdata);
+                console.log(parsedData[mode])
+                if (!parsedData[mode]) {
+                    parsedData[mode] = [];
+                }
+                parsedData[mode].unshift(newdata);
                 break;
             case DATA_MODE[2]: // 포스트
                 parsedData.unshift(newdata);

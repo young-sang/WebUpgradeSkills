@@ -7,32 +7,34 @@ import { dataFetch, handleDelete } from '../../../js/dataUtils.js';
 
 const HisyoryCreateForm = ({updateHistoryList}) => {
     const [formData, setFormData] = useState({
-            id: '',
-            title: '',
-            description: '',
-            date: '',
-        });
+        id: '',
+        content: '',
+        finish: '',
+        finDate: '',
+    });
 
     return (
         <form id="history-form" onSubmit={handleSubmit(
             {
-                id: Date.now(),
-                title: formData.title,
-                description: formData.description,
                 date: formatDate(Date.now()),
+                data:{
+                    id: Date.now(),
+                    content: formData.content,
+                    finish: false,
+                    finDate: null,
+                },
             },
             'historyData', 'create', (newData) => {
                 updateHistoryList(newData, 'create');
                 setFormData({
                     id: '',
-                    title: '',
-                    description: '',
-                    date: '',
+                    content: '',
+                    finish: '',
+                    finDate: '',
                 });
             }
         )}>
-            <input type="text" id="title" placeholder="Title" name='title' value={formData.title} onChange={handleChange(setFormData)} required />
-            <textarea id="description" placeholder="Description" name='description' value={formData.description} onChange={handleChange(setFormData)} required></textarea>
+            <input type="text" id="content" placeholder="Content" name='content' value={formData.content} onChange={handleChange(setFormData)} required />
             <button type="submit">추가</button>
         </form>
     )
@@ -41,18 +43,18 @@ const HisyoryCreateForm = ({updateHistoryList}) => {
 const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHistoryList }) => {
     const [formData, setFormData] = useState({
         id: '',
-        title: '',
-        description: '',
-        date: '',
+        content: '',
+        finish: false,
+        finDate: '',
     });
 
     useEffect(() => {
         if(mode === 'update' && historyData){
             setFormData({
                 id: historyData.id,
-                title: historyData.title || '',
-                description: historyData.description || '',
-                date: historyData.date || '',
+                content: historyData.content || '',
+                finish: historyData.finish,
+                finDate: historyData.finDate
             })
         }
     }, [mode, historyData]);
@@ -71,17 +73,16 @@ const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHis
                 <form id='historyUpdateForm' onSubmit={handleSubmit(
                     {
                         id: formData.id,
-                        title: formData.title,
-                        description: formData.description,
-                        date: formData.date,
+                        content: formData.content,
+                        finish: formData.finish,
+                        finDate: formData.finDate
                     },
                     'historyData', 'update', (newData) => {
                         updateHistoryList(newData, "update");
                         handleModalOff();
                     }
                 )}>
-                    <input type='text' id='historyHead' name='title' value={formData.title} onChange={handleChange(setFormData)} required />
-                    <textarea id='historyDescription' name='description' value={formData.description} onChange={handleChange(setFormData)} required></textarea>
+                    <input type='text' id='historyContent' name='content' value={formData.content} onChange={handleChange(setFormData)} required />
                     <button type='submit'>수정</button>
                 </form>
                 <button id='itemDelete' onClick={() => {handleDelete(`historyData/delete/${historyData.id}`, () => {
@@ -133,11 +134,36 @@ const HistoryPage = () => {
                     switch(mode){
                         case "create":
                             console.log(updatedData);
-                            setHistoryList((prevList) => [updatedData, ...prevList]);
+                            setHistoryList((prevList) => {
+                                const upda = prevList[updatedData.date] ? [updatedData.data, ...prevList[updatedData.date]] : [updatedData.data];
+
+                                return {
+                                    ...prevList,
+                                    [updatedData.date]: upda,
+                                };
+                            });
                             break;
                     }
-                }} />
-            <ul id='post-list' className='scrollable-container'>
+            }} />
+            
+            <div className='todo-container'>
+                {Object.entries(historyList).reverse().map(([date, items]) => (
+                    <div key={date} className='date-section'>
+                        <h2 className='date-title'>{date}</h2>
+                        <ul id='post-list' className='scrollable-card'>
+                            {items.map((item) => (
+                                <li key={item.id} className='post-card'>
+                                    <p>{item.content}</p>
+                                    <p>완료 여부 : {item.finish ? "완료됨" : "미완료"}</p>
+                                    <button className='updateBtn' onClick={() => handleUpdatePage(item)}>수정</button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+            </div>
+
+            {/* <ul id='post-list' className='scrollable-container'>
                 {historyList.slice().map((item, index) => (
                     <li key={index} className='post-card'>
                         <h2>{item.title}</h2>
@@ -146,7 +172,7 @@ const HistoryPage = () => {
                         <button className='updateBtn' onClick={() => handleUpdatePage(item)}>수정</button>
                     </li>
                 ))}
-            </ul>
+            </ul> */}
             {isUpdatePageOn && (
                 <HistoryUpdatePage 
                     mode={'update'} 
