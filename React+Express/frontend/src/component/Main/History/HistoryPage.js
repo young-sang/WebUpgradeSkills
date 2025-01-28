@@ -4,7 +4,7 @@ import { formatDate } from '../../../js/utils.js';
 import { handleChange, handleSubmit } from '../../../js/formUtils.js';
 import { dataFetch, handleDelete } from '../../../js/dataUtils.js';
 
-
+// 히스토리 생성 폼
 const HisyoryCreateForm = ({updateHistoryList}) => {
     const [formData, setFormData] = useState({
         id: '',
@@ -40,6 +40,7 @@ const HisyoryCreateForm = ({updateHistoryList}) => {
     )
 }
 
+// 히스토리 업데이트 폼
 const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHistoryList }) => {
     const [formData, setFormData] = useState({
         id: '',
@@ -51,10 +52,10 @@ const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHis
     useEffect(() => {
         if(mode === 'update' && historyData){
             setFormData({
-                id: historyData.id,
-                content: historyData.content || '',
-                finish: historyData.finish,
-                finDate: historyData.finDate
+                id: historyData.data.id,
+                content: historyData.data.content || '',
+                finish: historyData.data.finish,
+                finDate: historyData.data.finDate
             })
         }
     }, [mode, historyData]);
@@ -72,10 +73,13 @@ const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHis
                 </div>
                 <form id='historyUpdateForm' onSubmit={handleSubmit(
                     {
-                        id: formData.id,
-                        content: formData.content,
-                        finish: formData.finish,
-                        finDate: formData.finDate
+                        date: historyData.date,
+                        data: {
+                            id: formData.id,
+                            content: formData.content,
+                            finish: formData.finish,
+                            finDate: formData.finDate
+                        }
                     },
                     'historyData', 'update', (newData) => {
                         updateHistoryList(newData, "update");
@@ -85,7 +89,7 @@ const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHis
                     <input type='text' id='historyContent' name='content' value={formData.content} onChange={handleChange(setFormData)} required />
                     <button type='submit'>수정</button>
                 </form>
-                <button id='itemDelete' onClick={() => {handleDelete(`historyData/delete/${historyData.id}`, () => {
+                <button id='itemDelete' onClick={() => {handleDelete(`historyData/delete/${historyData.date}/${historyData.data.id}`, () => {
                     updateHistoryList(historyData, 'delete');
                     handleModalOff();
                 })}}>삭제</button>
@@ -109,19 +113,25 @@ const HistoryPage = () => {
     }, []);
 
     useEffect(() => {
-        console.log("historyUpdated");
+        console.log(1);
         console.log(historyList);
     }, [historyList]);
 
 
-    const handleUpdatePage = (history) => {
+    const handleUpdatePage = (date, data) => {
         setIsUpdatePageOn(true);
-        setUpdateHistory(history);
+        setUpdateHistory({date, data});
+    }
+
+    
+    const handleFinish = (item) => {
+        console.log(item);
     }
 
     const handleUpdatePageOff = () => {
         setIsUpdatePageOn(false);
     }
+
 
     if(!historyList || historyList.length === 0){
         return <p>No history Found.</p>
@@ -129,11 +139,11 @@ const HistoryPage = () => {
 
     return (
         <div>
+            {/* 히스토리 추가 FORM */}
             <HisyoryCreateForm
                 updateHistoryList={(updatedData, mode) => {
                     switch(mode){
                         case "create":
-                            console.log(updatedData);
                             setHistoryList((prevList) => {
                                 const upda = prevList[updatedData.date] ? [updatedData.data, ...prevList[updatedData.date]] : [updatedData.data];
 
@@ -146,6 +156,7 @@ const HistoryPage = () => {
                     }
             }} />
             
+            {/* 히스토리 나열 */}
             <div className='todo-container'>
                 {Object.entries(historyList).reverse().map(([date, items]) => (
                     <div key={date} className='date-section'>
@@ -155,7 +166,8 @@ const HistoryPage = () => {
                                 <li key={item.id} className='post-card'>
                                     <p>{item.content}</p>
                                     <p>완료 여부 : {item.finish ? "완료됨" : "미완료"}</p>
-                                    <button className='updateBtn' onClick={() => handleUpdatePage(item)}>수정</button>
+                                    <button className='updateBtn' onClick={() => handleFinish(item)}>완료</button>
+                                    <button className='updateBtn' onClick={() => handleUpdatePage(date, item)}>수정</button>
                                 </li>
                             ))}
                         </ul>
@@ -163,16 +175,7 @@ const HistoryPage = () => {
                 ))}
             </div>
 
-            {/* <ul id='post-list' className='scrollable-container'>
-                {historyList.slice().map((item, index) => (
-                    <li key={index} className='post-card'>
-                        <h2>{item.title}</h2>
-                        <p>{item.description}</p>
-                        <p>{item.date}</p>
-                        <button className='updateBtn' onClick={() => handleUpdatePage(item)}>수정</button>
-                    </li>
-                ))}
-            </ul> */}
+            {/* 업데이트 폼 */}
             {isUpdatePageOn && (
                 <HistoryUpdatePage 
                     mode={'update'} 
@@ -181,16 +184,37 @@ const HistoryPage = () => {
                     updateHistoryList={(updatedData, mode) => {
                         switch(mode){
                             case "update":
-                                setHistoryList((prevList) => 
-                                    prevList.map((item) => 
-                                        item.id === updatedData.id ? updatedData : item
-                                    )
-                                )
+                                console.log(updatedData);
+                                console.log(historyList);
+                                setHistoryList((prevList) => {
+                                    // prevList를 복사
+                                    const updatedList = { ...prevList };
+                                  
+                                    // updatedData.date 키의 배열이 존재하는지 확인
+                                    if (updatedList[updatedData.date]) {
+                                      updatedList[updatedData.date] = updatedList[updatedData.date].map((item) =>
+                                        item.id === updatedData.data.id ? updatedData.data : item
+                                      );
+                                    } else {
+                                      console.error("해당 날짜에 대한 데이터가 없습니다.");
+                                    }
+                                  
+                                    return updatedList;
+                                  });
                                 break;
                             case 'delete':
-                                console.log(updatedData);
-                                setHistoryList((prevList) => 
-                                    prevList.filter((item) => item.id != updatedData.id))
+                                setHistoryList((prevList) => {
+                                    const deleteList = {...prevList };
+                                    console.log(deleteList[updatedData.date]);
+
+                                    if(deleteList[updatedData.date]){
+                                        deleteList[updatedData.date] =  deleteList[updatedData.date].filter((item) => item.id != updatedData.data.id)
+                                    } else {
+                                        console.error("에러");
+                                    }
+                                    console.log(deleteList);
+                                    return deleteList;
+                                })
                                 break;
                         }
                     }} />

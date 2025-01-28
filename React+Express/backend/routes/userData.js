@@ -16,7 +16,6 @@ router.post('/', (req, res) => {
 });
 
 router.post('/compare', (req, res) => {
-    console.log('ta');
     compareData(req, res, JSON_FILE_PATH);
 });
 

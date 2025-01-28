@@ -64,7 +64,6 @@ exports.addJsonData = (req, res, JSONfilePath) => {
                 parsedData[mode].push(newdata);
                 break;
             case DATA_MODE[1]: // 히스토리
-                console.log(parsedData[mode])
                 if (!parsedData[mode]) {
                     parsedData[mode] = [];
                 }
@@ -93,19 +92,19 @@ exports.addJsonData = (req, res, JSONfilePath) => {
 exports.updateData = (req, res, JSONfilePath) => {
     const dataMode = path.basename(JSONfilePath);
 
-    let itemMode = '';
+    let mode = '';
     let data = '';
-    
 
     switch(dataMode){
         case DATA_MODE[0]: //옵션
-            itemMode = req.body.itemMode;
+            mode = req.body.itemMode;
             data = req.body.data;
             break;
-        case DATA_MODE[1]:
-            data = req.body;
+        case DATA_MODE[1]: // 히스토리
+            mode = req.body.date;
+            data = req.body.data;
             break;
-        case DATA_MODE[2]:
+        case DATA_MODE[2]: // 포스트
             data = req.body;
             break;
     }
@@ -121,28 +120,28 @@ exports.updateData = (req, res, JSONfilePath) => {
         // 데이터 가공
         let parsedData = JSON.parse(jsonData);
         let targetId = null;
+
         switch(dataMode){
             case DATA_MODE[0]:
 
-                targetId = parsedData[itemMode].findIndex((post) => post.id == data.id);
+                targetId = parsedData[mode].findIndex((post) => post.id == data.id);
 
                 if(targetId === -1){
                     return sendErrorResponse(res, 404, err);
                 }
 
                 // 기존 데이터 수정
-                parsedData[itemMode][targetId] = {...parsedData[itemMode][targetId], ...data};
-                break;
+                parsedData[mode][targetId] = {...parsedData[mode][targetId], ...data};
                 break;
             case DATA_MODE[1]:
-                targetId = parsedData.findIndex((post) => post.id == data.id);
+                targetId = parsedData[mode].findIndex((post) => post.id == data.id);
 
                 if(targetId === null){
                     return sendErrorResponse(res, 404, err);
                 }
 
                 // 기존 데이터 수정
-                parsedData[targetId] = {...parsedData[targetId], ...data};
+                parsedData[mode][targetId] = {...parsedData[mode][targetId], ...data};
 
                 break;
             case DATA_MODE[2]:
@@ -174,21 +173,23 @@ exports.deleteData = (req, res, JSONfilePath) => {
     const id = req.params.id;
     const dataMode = path.basename(JSONfilePath);
     const itemMode = req.params.itemMode ? req.params.itemMode : '';
-    console.log(id);
-    console.log(itemMode);
+    const date = req.params.date ? req.params.date : '';
+
     fs.readFile(JSONfilePath, 'utf8', (err, jsonData) => {
         if (err) {
             return sendErrorResponse(res, 500, err);
         }
 
         let parsedData = JSON.parse(jsonData);
+
+        console.log(parsedData[date]);
         
         switch(dataMode){
             case DATA_MODE[2]:
                 parsedData = parsedData.filter((post) => post.id != id);
                 break;
             case DATA_MODE[1]:
-                parsedData = parsedData.filter((item) => item.id != id);
+                parsedData[date] = parsedData[date].filter((item) => item.id != id);
                 break;
             case DATA_MODE[0]:
                 parsedData[itemMode] = parsedData[itemMode].filter((item) => item.id != id);
@@ -227,7 +228,6 @@ exports.compareData = (req, res, JSONfilePath) => {
             switch(getData.searchType){
                 case "userName":
                     existingData = parsedData.find(item => item.userName === getData.compareData);
-                    console.log(getData);
                     break;
                 case "userId":
                     existingData = parsedData.find(item => item.userId === getData.compareData);
