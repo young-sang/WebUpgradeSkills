@@ -1,3 +1,4 @@
+
 [] 포스트를 객체지향형으로 변경
 [] 리팩토링
 
@@ -29,5 +30,9 @@
 25.01.27
 [] 깃허브로 웹 호스팅 하기
 [o] new 히스토리 add 변경
-[] new 히스토리 update 변경
-[] new 히스토리 delete 변경
+[o] new 히스토리 update 변경
+[o] new 히스토리 delete 변경
+
+
+25.01.29
+[] handlesubmit 개선

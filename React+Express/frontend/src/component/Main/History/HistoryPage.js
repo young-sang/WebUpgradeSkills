@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../../js/utils.js';
 import { handleChange, handleSubmit } from '../../../js/formUtils.js';
-import { dataFetch, handleDelete } from '../../../js/dataUtils.js';
+import { dataFetch, handelPut, handleDelete } from '../../../js/dataUtils.js';
 
 // 히스토리 생성 폼
 const HisyoryCreateForm = ({updateHistoryList}) => {
@@ -124,8 +124,23 @@ const HistoryPage = () => {
     }
 
     
-    const handleFinish = (item) => {
-        console.log(item);
+    const handleFinish = (item, date) => {
+        item.finish = true;
+        item.finDate = formatDate(Date.now());
+
+        handelPut({
+            date: date,
+            data: item            
+        }, 'historyData', () => {
+            setHistoryList((prevList) => {
+                const list = {...prevList};
+    
+                if(list[date]){
+                    list[date] = list[date].map((value) => value.id === item.id ? item : value)
+                }
+                return list;
+            });
+        });
     }
 
     const handleUpdatePageOff = () => {
@@ -166,7 +181,7 @@ const HistoryPage = () => {
                                 <li key={item.id} className='post-card'>
                                     <p>{item.content}</p>
                                     <p>완료 여부 : {item.finish ? "완료됨" : "미완료"}</p>
-                                    <button className='updateBtn' onClick={() => handleFinish(item)}>완료</button>
+                                    <button className='updateBtn' onClick={() => handleFinish(item, date)}>완료</button>
                                     <button className='updateBtn' onClick={() => handleUpdatePage(date, item)}>수정</button>
                                 </li>
                             ))}
@@ -184,8 +199,6 @@ const HistoryPage = () => {
                     updateHistoryList={(updatedData, mode) => {
                         switch(mode){
                             case "update":
-                                console.log(updatedData);
-                                console.log(historyList);
                                 setHistoryList((prevList) => {
                                     // prevList를 복사
                                     const updatedList = { ...prevList };

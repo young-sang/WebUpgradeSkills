@@ -3,11 +3,31 @@ export const dataFetch = async (path) => {
     return data.data;
 }
 
+
+export const handelPut = async (newData, path, afterPut = () => {}) => {
+    try {
+        const url = `http://localhost:3000/data/` + path;
+        const method = 'PUT';
+
+        await fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newData),
+        });
+        afterPut();
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+
 export const handleDelete = async (path, afterDelete = () => {}) => {
     try {
-        console.log(path);
         const url = `http://localhost:3000/data/` + path;
         const method = 'DELETE';
+
         const deleteData = async () => {
             await fetch(url, {
                 method,
