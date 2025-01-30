@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { formatDate } from '../../../js/utils.js';
 import { handleChange, handleSubmit } from '../../../js/formUtils.js';
 import { dataFetch, handelPut, handleDelete } from '../../../js/dataUtils.js';
+// import styles from '../css/History.module.css';
 
 // 히스토리 생성 폼
 const HisyoryCreateForm = ({updateHistoryList}) => {
@@ -62,7 +63,7 @@ const HistoryUpdatePage = ({ mode = null, handleModalOff, historyData, updateHis
 
     return (
         <div id='blurBackground'>
-            <section id='historySet'>
+            <section id='historySet' className='popSet'>
                 <div id='itemheader'>
                     <div>
                         <h3>History Update</h3>
@@ -113,7 +114,6 @@ const HistoryPage = () => {
     }, []);
 
     useEffect(() => {
-        console.log(1);
         console.log(historyList);
     }, [historyList]);
 

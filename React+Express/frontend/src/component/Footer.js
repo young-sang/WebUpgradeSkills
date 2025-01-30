@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import styles from '../css/Footer.module.css';
 
 function Footer() {
   return (
-    <footer id="app-footer">
+    <footer id="app-footer" className={styles.footer}>
         <h2>Posts</h2>
         <ul>
             <li>Post 1</li>

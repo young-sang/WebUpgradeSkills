@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { dataFetch, handleDelete } from '../../../js/dataUtils.js';
 import { handleChange, handleSubmit } from '../../../js/formUtils.js';
+import styles from '../../../css/Option.module.css';
 
 const OptionColorSet = ({ colorSet }) => {
     const [colorIndex, setColorIndex] = useState(() => {
@@ -45,7 +46,7 @@ const OptionUpdatePage = ({ itemMode = null, mode = null, handleModalOff, data =
 
     return (
         <div id='blurBackground'>
-            <section id='historySet'>
+            <section id='historySet' className='popSet'>
                 <div id='itemheader'>
                     <div>
                         <h3>{itemMode} {mode}</h3>
@@ -93,14 +94,14 @@ const OptionItemContainer = ({itemMode, data, handleModal, setData, setMode}) =>
     }    
 
     return (
-        <section id="tags-items" className="option-Items">
-            <h3>{itemMode}</h3>
-            <ul className="OptionItemList">
+        <section id="tags-items" className={styles.optionItems}>
+            <h3 className={styles.optionItemsHeader}>{itemMode}</h3>
+            <ul className={styles.optionItemList}>
                 {(data || []).map((item, index) => (
-                    <li key={index} className='optionItem' data-index={index} onClick={() => handleItem(item, "update")}>{item[itemMode]}</li>
+                    <li key={index} className={styles.optionItem} data-index={index} onClick={() => handleItem(item, "update")}>{item[itemMode]}</li>
                 ))}
             </ul>
-            <button className="btnItemAdd" onClick={() => handleItem(null, "create")}>+</button>
+            <button className={styles.btnItemAdd} onClick={() => handleItem(null, "create")}>+</button>
         </section>
     )
 }

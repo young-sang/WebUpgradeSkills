@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { dataFetch } from '../js/dataUtils.js';
 import { useParams, useNavigate } from 'react-router-dom';
 import { handleChange, handleSubmit } from '../js/formUtils.js';
+import styles from '../css/Form.module.css';
 
 export const PostForm = ({ mode = null }) => {
     const navigate = useNavigate();
@@ -46,7 +47,7 @@ export const PostForm = ({ mode = null }) => {
     }, [mode, id]);
 
     return (
-        <form id="post-form" onSubmit={handleSubmit(
+        <form id="post-form" className={styles.postForm} onSubmit={handleSubmit(
             {
                 id: mode === 'create' ? Date.now() : formData.id,
                 title: formData.title,
@@ -76,8 +77,8 @@ export const PostForm = ({ mode = null }) => {
                     ))}
                 </select>
             </div>
-            <input type="text" id="title" placeholder="title" name='title' value={formData.title} onChange={handleChange(setFormData)} required />
-            <textarea id="description" placeholder="Description" name='description' value={formData.description} onChange={handleChange(setFormData)} required></textarea>
+            <input type="text" id="title" className={styles.title} placeholder="title" name='title' value={formData.title} onChange={handleChange(setFormData)} required />
+            <textarea id="description" className={styles.description} placeholder="Description" name='description' value={formData.description} onChange={handleChange(setFormData)} required></textarea>
             <button type="submit" id="submit-form">
                 {mode === 'create' ? '추가' : '수정'}
             </button>

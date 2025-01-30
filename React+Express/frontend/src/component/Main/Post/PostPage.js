@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { dataFetch, handleDelete } from '../../../js/dataUtils.js';
+import styles from '../../../css/Post.module.css';
 
 const PostPage = () => {
     const navigate = useNavigate();

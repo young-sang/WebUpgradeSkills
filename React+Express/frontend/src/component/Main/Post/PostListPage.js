@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link  } from "react-router-dom";
 import { dataFetch } from '../../../js/dataUtils.js';
 import { handleChange } from '../../../js/formUtils.js';
+import styles from '../../../css/Post.module.css';
 
 
 const SearchForm = ({postList, setFilteredPostList}) => {
@@ -62,11 +63,11 @@ const PostListPage = () => {
     return (
         <div>
             <SearchForm postList={postList} setFilteredPostList={setFilteredPostList}/>
-            <ul id="post-list" className="scrollable-container">
+            <ul id={styles.postList} className="scrollable-container">
                 {currentPosts.slice().map((post,index) => (
-                    <li key={index} data-index={index} className='post-card'>
+                    <li key={index} data-index={index} className={styles.postCard}>
                         <Link to={`/post/${post.id}`} >
-                            <h2>{post.title}</h2>
+                            <h2 className={styles.postCardHeader}>{post.title}</h2>
                             <p>{post.id}</p>
                         </Link>
                     </li>
