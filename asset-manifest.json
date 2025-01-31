@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/WebUpgradeSkills/static/css/main.1c14a7e8.css",
-    "main.js": "/WebUpgradeSkills/static/js/main.515af69f.js",
+    "main.js": "/WebUpgradeSkills/static/js/main.c3601bfb.js",
     "static/js/488.e75445ad.chunk.js": "/WebUpgradeSkills/static/js/488.e75445ad.chunk.js",
     "index.html": "/WebUpgradeSkills/index.html",
     "main.1c14a7e8.css.map": "/WebUpgradeSkills/static/css/main.1c14a7e8.css.map",
-    "main.515af69f.js.map": "/WebUpgradeSkills/static/js/main.515af69f.js.map",
+    "main.c3601bfb.js.map": "/WebUpgradeSkills/static/js/main.c3601bfb.js.map",
     "488.e75445ad.chunk.js.map": "/WebUpgradeSkills/static/js/488.e75445ad.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1c14a7e8.css",
-    "static/js/main.515af69f.js"
+    "static/js/main.c3601bfb.js"
   ]
 }
