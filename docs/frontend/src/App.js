@@ -6,7 +6,7 @@ import Main from './component/Main/Main.js';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/WebUpgradeSkills">
       <Header />
       <Main />
       <Footer />
